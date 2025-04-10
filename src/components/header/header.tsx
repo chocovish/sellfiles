@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '../ui/button';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BrandLogo } from './brand-logo';
 import {
   LayoutDashboard,
@@ -31,6 +31,25 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -61,9 +80,11 @@ export function Header() {
           )}
         </button>
 
-        <nav className={`
+        <nav
+          ref={menuRef}
+          className={`
           ${isMenuOpen ? 'flex' : 'hidden'} 
-          lg:flex flex-col lg:flex-row fixed lg:relative 
+          lg:flex flex-col lg:flex-row max-sm:absolute lg:relative 
           top-[61px] lg:top-auto left-0 right-0 
           bg-white lg:bg-transparent border-b lg:border-0 
           p-4 lg:p-0 shadow-lg lg:shadow-none 
