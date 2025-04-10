@@ -24,18 +24,19 @@ import { LoaderSkeleton } from '@/components/dashboard/loader-skeletone';
 import { Link, useRouter } from '@tanstack/react-router';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { useUserProfile } from '~/hooks/use-user';
+import { useInvalidateUserData } from '~/hooks/use-user-query';
 
 export default function SalesDashboard() {
   const [timeframe, setTimeframe] = useState<'day' | 'month' | 'year'>('day');
   const [salesLimit, setSalesLimit] = useState('10');
 
-  const {userProfile, isLoading: isLoadingUserProfile} = useUserProfile();
+  const {userProfile, isLoading: isLoadingUserProfile, refetch: refetchUserProfile} = useUserProfile();
 
-  const {data: salesData, isLoading: isLoadingSales, refetch: refetchSales} = useQuery({
+  const {data: salesData, isLoading: isLoadingSales, refetch: refetchSales, isFetching: isFetchingSales} = useQuery({
     queryKey: ['salesData', timeframe],
     queryFn: () => getSalesData({data: {timeframe}}),
   });
-  const {data: recentSales, isLoading: isLoadingRecentSales, refetch: refetchRecentSales} = useQuery({
+  const {data: recentSales, isLoading: isLoadingRecentSales, refetch: refetchRecentSales, isFetching: isFetchingRecentSales} = useQuery({
     queryKey: ['recentSales', salesLimit],
     queryFn: () => getRecentSales({data:{limit: parseInt(salesLimit)} }),
   });
@@ -151,14 +152,17 @@ export default function SalesDashboard() {
               variant="outline" 
               size="sm"
               onClick={() => {
+                // invalidateProfileQuery()
+                refetchUserProfile();
                 refetchSales();
                 refetchRecentSales();
-                refetchBalance();
+                // refetchBalance();
               }}
               className="ml-auto"
+              disabled={isFetchingSales || isFetchingRecentSales}
             >
               <RefreshCw className="h-4 w-4 mr-1" />
-              Refresh
+              {isFetchingSales || isFetchingRecentSales ? 'Refreshing...' : 'Refresh'}
             </Button>
           </div>
           

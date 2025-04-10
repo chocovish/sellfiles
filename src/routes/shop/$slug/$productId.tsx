@@ -170,9 +170,10 @@ function ProductDetailPage() {
                 <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   {product.title}
                 </h1>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  {product.description}
-                </p>
+                <div
+                  className="text-gray-600 text-lg leading-relaxed p-4 bg-white/60 backdrop-blur-sm rounded-xl"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
               </div>
 
               {/* Features */}
