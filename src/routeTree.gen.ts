@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as VishalImport } from './routes/vishal'
 import { Route as TermsImport } from './routes/terms'
+import { Route as RefundImport } from './routes/refund'
 import { Route as PrivacyImport } from './routes/privacy'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as AuthRouteImport } from './routes/auth/route'
@@ -42,6 +43,12 @@ const VishalRoute = VishalImport.update({
 const TermsRoute = TermsImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RefundRoute = RefundImport.update({
+  id: '/refund',
+  path: '/refund',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -179,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyImport
+      parentRoute: typeof rootRoute
+    }
+    '/refund': {
+      id: '/refund'
+      path: '/refund'
+      fullPath: '/refund'
+      preLoaderRoute: typeof RefundImport
       parentRoute: typeof rootRoute
     }
     '/terms': {
@@ -350,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/privacy': typeof PrivacyRoute
+  '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/vishal': typeof VishalRoute
   '/dashboard/myprofile': typeof DashboardMyprofileRouteRouteWithChildren
@@ -371,6 +386,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/privacy': typeof PrivacyRoute
+  '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/vishal': typeof VishalRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -393,6 +409,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/privacy': typeof PrivacyRoute
+  '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
   '/vishal': typeof VishalRoute
   '/dashboard/myprofile': typeof DashboardMyprofileRouteRouteWithChildren
@@ -417,6 +434,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/privacy'
+    | '/refund'
     | '/terms'
     | '/vishal'
     | '/dashboard/myprofile'
@@ -437,6 +455,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/privacy'
+    | '/refund'
     | '/terms'
     | '/vishal'
     | '/auth/forgot-password'
@@ -457,6 +476,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/privacy'
+    | '/refund'
     | '/terms'
     | '/vishal'
     | '/dashboard/myprofile'
@@ -480,6 +500,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
+  RefundRoute: typeof RefundRoute
   TermsRoute: typeof TermsRoute
   VishalRoute: typeof VishalRoute
   ShopSlugProductIdRoute: typeof ShopSlugProductIdRoute
@@ -491,6 +512,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
+  RefundRoute: RefundRoute,
   TermsRoute: TermsRoute,
   VishalRoute: VishalRoute,
   ShopSlugProductIdRoute: ShopSlugProductIdRoute,
@@ -511,6 +533,7 @@ export const routeTree = rootRoute
         "/auth",
         "/dashboard",
         "/privacy",
+        "/refund",
         "/terms",
         "/vishal",
         "/shop/$slug/$productId",
@@ -539,6 +562,9 @@ export const routeTree = rootRoute
     },
     "/privacy": {
       "filePath": "privacy.tsx"
+    },
+    "/refund": {
+      "filePath": "refund.tsx"
     },
     "/terms": {
       "filePath": "terms.tsx"

@@ -80,7 +80,7 @@ function WithdrawalsPage() {
           </div>
           <div>
             <p className="text-gray-600 text-sm">Available Balance</p>
-            <p className="font-bold text-xl">${balance.toFixed(2)}</p>
+            <p className="font-bold text-xl">₹{balance.toFixed(2)}</p>
           </div>
         </div>
 
@@ -103,7 +103,7 @@ function WithdrawalsPage() {
                         <FormLabel className="text-gray-700">Amount</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
                             <Input
                               type="number"
                               placeholder="Enter amount"
@@ -218,7 +218,7 @@ function PaymentDetailsUpdateHistory() {
                     {format(new Date(withdrawal.createdAt), 'PPP')}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
-                    ${withdrawal.amount.toFixed(2)}
+                  ₹{withdrawal.amount.toFixed(2)}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center space-x-1">

@@ -145,12 +145,16 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
+                <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
                   <Input
+                    className="pl-8"
                     type="number"
                     step="0.01"
                     {...field}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

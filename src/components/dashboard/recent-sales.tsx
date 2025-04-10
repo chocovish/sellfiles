@@ -100,7 +100,7 @@ export function RecentSales({ sales, onLimitChange, currentLimit = '10' }: Recen
                   <TableCell className="font-medium text-gray-900">{sale.productName}</TableCell>
                   <TableCell className="text-gray-600">{sale.buyerName}</TableCell>
                   <TableCell className="font-semibold text-purple-600">
-                    ${sale.amount.toFixed(2)}
+                  ₹{sale.amount.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

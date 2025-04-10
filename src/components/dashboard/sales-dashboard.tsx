@@ -106,7 +106,7 @@ export default function SalesDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Balance</p>
-                    <p className="text-xl font-bold">${userProfile?.balance!.toFixed(2)}</p>
+                    <p className="text-xl font-bold">₹{userProfile?.balance!.toFixed(2)}</p>
                   </div>
                 </div>
               </Card>
@@ -173,7 +173,7 @@ export default function SalesDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Sales this {timeframe}</p>
-                  <p className="text-2xl font-bold">${totalSales.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">₹{totalSales.toFixed(2)}</p>
                   <div className="flex items-center mt-1 text-sm text-green-600">
                     <ArrowUpRight className="h-3 w-3 mr-1" />
                     <span>{salesGrowth}% from last period</span>
@@ -207,7 +207,7 @@ export default function SalesDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Avg. Order Value this {timeframe}</p>
-                  <p className="text-2xl font-bold">${avgOrderValue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">₹{avgOrderValue.toFixed(2)}</p>
                   <div className="flex items-center mt-1 text-sm text-green-600">
                     <ArrowUpRight className="h-3 w-3 mr-1" />
                     <span>{aovGrowth}% from last period</span>

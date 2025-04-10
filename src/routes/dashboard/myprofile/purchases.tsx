@@ -106,7 +106,7 @@ function PurchasesPage() {
             <DollarSign className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-800">${stats.totalSpent.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-gray-800">₹{stats.totalSpent.toFixed(2)}</div>
             <p className="text-xs text-gray-500">
               Lifetime spending
             </p>
@@ -198,7 +198,7 @@ function PurchasesPage() {
                       <TableCell className="hidden md:table-cell text-gray-700">
                         {format(new Date(purchase.createdAt), 'dd MMM yyyy')}
                       </TableCell>
-                      <TableCell className="text-gray-700">${purchase.amount.toFixed(2)}</TableCell>
+                      <TableCell className="text-gray-700">₹{purchase.amount.toFixed(2)}</TableCell>
                       <TableCell className="hidden md:table-cell text-gray-700">
                         {purchase.seller.name || 'Unknown Seller'}
                       </TableCell>
@@ -212,7 +212,9 @@ function PurchasesPage() {
                           </Button>
                           <Button variant="ghost" size="icon" asChild className="text-purple-600 hover:text-purple-800 hover:bg-purple-100">
                             <Link 
-                              to={`/shop/${purchase.seller.shopSlug}/${purchase.product.id}`} 
+                            
+                              to={`/shop/$slug/$productId`}
+                              params={{slug: purchase.seller.shopSlug, productId: purchase.product.id}} 
                               target="_blank"
                             >
                               <ExternalLink className="h-4 w-4" />

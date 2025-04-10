@@ -158,7 +158,7 @@ function ProductDetailPage() {
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
                   <Tag className="w-5 h-5 text-purple-600" />
                   <span className="font-bold text-purple-600 text-lg">
-                    ${product.price}
+                  ₹{product.price}
                   </span>
                 </div>
               </div>
@@ -208,7 +208,7 @@ function ProductDetailPage() {
                 ) : (
                   <>
                     <ShoppingCart className="mr-2 h-5 w-5" />
-                    Buy Now - ${product.price}
+                    Buy Now - ₹{product.price}
                   </>
                 )}
               </Button>
@@ -230,7 +230,7 @@ function ProductDetailPage() {
               Confirm Purchase
             </h3>
             <p className="text-gray-600">
-              You are about to purchase {product.title} for ${product.price}
+              You are about to purchase {product.title} for ₹{product.price}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button

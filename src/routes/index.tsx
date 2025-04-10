@@ -26,11 +26,11 @@ function Home() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Sell Digital Goods
               <span className="block bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent mt-2">
-                Without Commission
+                With No Monthly Subscription Fees*
               </span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-xl mx-auto md:mx-0">
-              Your creativity, your earnings - keep 100% of what you make.
+              *Your creativity, your earnings - we charge <b>4% only</b> when your product is sold.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
               {userProfile?.id
@@ -77,12 +77,12 @@ function Home() {
         {/* Features Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 py-8 sm:py-12 md:py-16 mt-8">
           <div className="space-y-3 sm:space-y-4 p-4 sm:p-6 bg-white/10 backdrop-blur-lg rounded-2xl">
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Zero Commission</h2>
-            <p className="text-white/70 text-sm sm:text-base">Keep 100% of your sales. No hidden fees.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">No subscription</h2>
+            <p className="text-white/70 text-sm sm:text-base">Pay only when you are getting sales</p>
           </div>
           <div className="space-y-3 sm:space-y-4 p-4 sm:p-6 bg-white/10 backdrop-blur-lg rounded-2xl">
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Instant Payouts</h2>
-            <p className="text-white/70 text-sm sm:text-base">Get paid immediately after each sale.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Simple Payouts</h2>
+            <p className="text-white/70 text-sm sm:text-base">Get paid by just adding your UPI or bank details</p>
           </div>
           <div className="space-y-3 sm:space-y-4 p-4 sm:p-6 bg-white/10 backdrop-blur-lg rounded-2xl">
             <h2 className="text-xl sm:text-2xl font-bold text-white">Secure Platform</h2>
@@ -99,6 +99,10 @@ function Home() {
             <span>•</span>
             <Link to="/privacy" className="hover:text-white hover:underline transition">
               Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link to="/refund" className="hover:text-white hover:underline transition">
+              Refund Policy
             </Link>
           </div>
         </footer>

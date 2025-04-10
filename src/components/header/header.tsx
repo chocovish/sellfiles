@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/tooltip";
 import { LoaderSkeleton } from '../dashboard/loader-skeletone';
 import { Link, useRouter } from '@tanstack/react-router';
+import { useInvalidateUserData } from '~/hooks/use-user-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function Header() {
   const user = useUser();
@@ -50,10 +52,11 @@ export function Header() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMenuOpen]);
-
+  const queryClient = useQueryClient();
   const handleSignOut = async () => {
+    queryClient.clear();
     await supabase.auth.signOut();
-    router.push('/');
+    router.navigate({to:"/"});
   };
 
   // Check if user type is buyer
@@ -133,14 +136,13 @@ export function Header() {
             <UserCircle2 className="w-5 h-5" />
             <span>My Profile</span>
           </Link>
-            <Link
-              to="#"
+            <div
               className="cursor-pointer flex pl-0 items-center space-x-2 text-gray-700 hover:text-red-600"
               onClick={handleSignOut}
             >
               <LogOut className="w-5 h-5" />
               <span>Sign Out</span>
-            </Link>
+            </div>
         </nav>
       </div>
     </header>

@@ -65,7 +65,7 @@ function TermsPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">6. Reporting Violations</h2>
-              <p>If you encounter content that violates these terms or appears to be illegal, we encourage you to report it immediately. Please email detailed information about the violation to <a href="mailto:vishal.ghosh28@gmail.com" className="text-blue-600 hover:underline">vishal.ghosh28@gmail.com</a>.</p>
+              <p>If you encounter content that violates these terms or appears to be illegal, we encourage you to report it immediately. Please email detailed information about the violation to <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
             </section>
             
             <section>
@@ -85,7 +85,7 @@ function TermsPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">9. Contact Information</h2>
-              <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:vishal.ghosh28@gmail.com" className="text-blue-600 hover:underline">vishal.ghosh28@gmail.com</a>.</p>
+              <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
             </section>
           </div>
         </div>

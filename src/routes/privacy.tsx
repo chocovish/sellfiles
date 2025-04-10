@@ -79,7 +79,7 @@ function PrivacyPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">7. Content Reporting</h2>
-              <p>If you believe any content on our platform violates our policies, infringes upon intellectual property rights, or is otherwise illegal, please report it to <a href="mailto:vishal.ghosh28@gmail.com" className="text-blue-600 hover:underline">vishal.ghosh28@gmail.com</a> with detailed information about the violation.</p>
+              <p>If you believe any content on our platform violates our policies, infringes upon intellectual property rights, or is otherwise illegal, please report it to <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a> with detailed information about the violation.</p>
             </section>
             
             <section>
@@ -89,7 +89,7 @@ function PrivacyPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">9. Contact Information</h2>
-              <p>If you have questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:vishal.ghosh28@gmail.com" className="text-blue-600 hover:underline">vishal.ghosh28@gmail.com</a>.</p>
+              <p>If you have questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
             </section>
           </div>
         </div>

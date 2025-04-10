@@ -44,7 +44,7 @@ export function SalesStats({ data }: SalesStatsProps) {
             </div>
             <h3 className="font-medium text-gray-700">Total Revenue</h3>
           </div>
-          <p className="text-2xl font-bold text-blue-600">${totalSales.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-blue-600">₹{totalSales.toFixed(2)}</p>
           <p className="text-sm text-gray-500 mt-1">All time sales revenue</p>
         </div>
 
@@ -55,7 +55,7 @@ export function SalesStats({ data }: SalesStatsProps) {
             </div>
             <h3 className="font-medium text-gray-700">Average Sale</h3>
           </div>
-          <p className="text-2xl font-bold text-green-600">${averageSale.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-green-600">₹{averageSale.toFixed(2)}</p>
           <p className="text-sm text-gray-500 mt-1">Average revenue per sale</p>
         </div>
 
@@ -66,7 +66,7 @@ export function SalesStats({ data }: SalesStatsProps) {
             </div>
             <h3 className="font-medium text-gray-700">Best Sales Day</h3>
           </div>
-          <p className="text-2xl font-bold text-purple-600">${highestDay.amount.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-purple-600">₹{highestDay.amount.toFixed(2)}</p>
           <p className="text-sm text-gray-500 mt-1">{highestDay.date}</p>
         </div>
 
