@@ -335,22 +335,24 @@ function ProductsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
-                      <img
-                        src={product.imageUrl}
-                        alt={product.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className={`font-semibold text-lg ${!product.isVisible && 'text-gray-500'}`}>{product.title}</h3>
-                      <p className={`text-sm font-medium ${product.isVisible ? 'text-purple-600' : 'text-gray-500'}`}>
-                        ${product.price}
-                      </p>
-                      {!product.isVisible && (
-                        <span className="text-xs text-gray-500">Hidden</span>
-                      )}
+                  <div className="flex max-sm:flex-col md:justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+                        <img
+                          src={product.imageUrl}
+                          alt={product.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className={`font-semibold text-lg ${!product.isVisible && 'text-gray-500'}`}>{product.title}</h3>
+                        <p className={`text-sm font-medium ${product.isVisible ? 'text-purple-600' : 'text-gray-500'}`}>
+                          ${product.price}
+                        </p>
+                        {!product.isVisible && (
+                          <span className="text-xs text-gray-500">Hidden</span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center">
                       <Button
