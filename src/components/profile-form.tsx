@@ -64,10 +64,10 @@ export function ProfileForm() {
       if (data.image?.length) {
         const result = await uploadFile(data.image[0], "thumbnails");
         const payload = { ...data, image: result.fileUrl };
-        await updateProfile(payload);
+        await updateProfile({data: payload});
       } else {
         const payload = { ...data, image: user?.image };
-        await updateProfile(payload);
+        await updateProfile({data: payload});
       }
       invalidateUserProfile();
       toast.success("Profile updated successfully");

@@ -76,7 +76,7 @@ export function PaymentMethodForm() {
   };
 
   const onSubmit = (data: PaymentMethodFormValues) => {
-    updateMutation.mutate(data);
+    updateMutation.mutate({data});
   };
 
   const getPaymentMethodDetails = (details: any) => {
