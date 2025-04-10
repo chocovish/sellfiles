@@ -96,7 +96,9 @@ model PaymentMethodHistory {
   id              String   @id @default(cuid())
   paymentMethodId String
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  /// [PaymentMethodStringType]
   type            String   // "bank" or "upi"
+  /// [PaymentMethodType]
   details         Json     // Store payment details as JSON
   createdAt       DateTime @default(now())
 }

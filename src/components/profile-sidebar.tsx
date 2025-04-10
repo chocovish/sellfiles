@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from "@tanstack/react-router";
 import { UserCircle, CreditCard, ShoppingBag, Banknote } from "lucide-react";
 
 const navigation = [
@@ -12,7 +11,7 @@ const navigation = [
 ];
 
 export function ProfileSidebar() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
 
   return (
     <div className="w-full md:w-64 bg-gradient-to-br from-white to-slate-50 shadow-sm rounded-lg p-4 border border-blue-100">
@@ -23,7 +22,7 @@ export function ProfileSidebar() {
           return (
             <Link
               key={item.name}
-              href={item.href}
+              to={item.href}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                 pathname === item.href

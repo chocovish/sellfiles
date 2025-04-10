@@ -23,6 +23,13 @@ import { Route as AuthSignUpSuccessImport } from './routes/auth/sign-up-success'
 import { Route as AuthSignUpImport } from './routes/auth/sign-up'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordImport } from './routes/auth/forgot-password'
+import { Route as DashboardMyprofileRouteImport } from './routes/dashboard/myprofile/route'
+import { Route as ShopSlugIndexImport } from './routes/shop/$slug/index'
+import { Route as DashboardMyprofileIndexImport } from './routes/dashboard/myprofile/index'
+import { Route as ShopSlugProductIdImport } from './routes/shop/$slug/$productId'
+import { Route as DashboardMyprofileWithdrawalsImport } from './routes/dashboard/myprofile/withdrawals'
+import { Route as DashboardMyprofilePurchasesImport } from './routes/dashboard/myprofile/purchases'
+import { Route as DashboardMyprofilePaymentImport } from './routes/dashboard/myprofile/payment'
 
 // Create/Update Routes
 
@@ -98,6 +105,50 @@ const AuthForgotPasswordRoute = AuthForgotPasswordImport.update({
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
+const DashboardMyprofileRouteRoute = DashboardMyprofileRouteImport.update({
+  id: '/myprofile',
+  path: '/myprofile',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const ShopSlugIndexRoute = ShopSlugIndexImport.update({
+  id: '/shop/$slug/',
+  path: '/shop/$slug/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardMyprofileIndexRoute = DashboardMyprofileIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardMyprofileRouteRoute,
+} as any)
+
+const ShopSlugProductIdRoute = ShopSlugProductIdImport.update({
+  id: '/shop/$slug/$productId',
+  path: '/shop/$slug/$productId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardMyprofileWithdrawalsRoute =
+  DashboardMyprofileWithdrawalsImport.update({
+    id: '/withdrawals',
+    path: '/withdrawals',
+    getParentRoute: () => DashboardMyprofileRouteRoute,
+  } as any)
+
+const DashboardMyprofilePurchasesRoute =
+  DashboardMyprofilePurchasesImport.update({
+    id: '/purchases',
+    path: '/purchases',
+    getParentRoute: () => DashboardMyprofileRouteRoute,
+  } as any)
+
+const DashboardMyprofilePaymentRoute = DashboardMyprofilePaymentImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => DashboardMyprofileRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -144,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VishalImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/myprofile': {
+      id: '/dashboard/myprofile'
+      path: '/myprofile'
+      fullPath: '/dashboard/myprofile'
+      preLoaderRoute: typeof DashboardMyprofileRouteImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/auth/forgot-password': {
       id: '/auth/forgot-password'
       path: '/forgot-password'
@@ -186,6 +244,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/dashboard/myprofile/payment': {
+      id: '/dashboard/myprofile/payment'
+      path: '/payment'
+      fullPath: '/dashboard/myprofile/payment'
+      preLoaderRoute: typeof DashboardMyprofilePaymentImport
+      parentRoute: typeof DashboardMyprofileRouteImport
+    }
+    '/dashboard/myprofile/purchases': {
+      id: '/dashboard/myprofile/purchases'
+      path: '/purchases'
+      fullPath: '/dashboard/myprofile/purchases'
+      preLoaderRoute: typeof DashboardMyprofilePurchasesImport
+      parentRoute: typeof DashboardMyprofileRouteImport
+    }
+    '/dashboard/myprofile/withdrawals': {
+      id: '/dashboard/myprofile/withdrawals'
+      path: '/withdrawals'
+      fullPath: '/dashboard/myprofile/withdrawals'
+      preLoaderRoute: typeof DashboardMyprofileWithdrawalsImport
+      parentRoute: typeof DashboardMyprofileRouteImport
+    }
+    '/shop/$slug/$productId': {
+      id: '/shop/$slug/$productId'
+      path: '/shop/$slug/$productId'
+      fullPath: '/shop/$slug/$productId'
+      preLoaderRoute: typeof ShopSlugProductIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/myprofile/': {
+      id: '/dashboard/myprofile/'
+      path: '/'
+      fullPath: '/dashboard/myprofile/'
+      preLoaderRoute: typeof DashboardMyprofileIndexImport
+      parentRoute: typeof DashboardMyprofileRouteImport
+    }
+    '/shop/$slug/': {
+      id: '/shop/$slug/'
+      path: '/shop/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -209,12 +309,34 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface DashboardMyprofileRouteRouteChildren {
+  DashboardMyprofilePaymentRoute: typeof DashboardMyprofilePaymentRoute
+  DashboardMyprofilePurchasesRoute: typeof DashboardMyprofilePurchasesRoute
+  DashboardMyprofileWithdrawalsRoute: typeof DashboardMyprofileWithdrawalsRoute
+  DashboardMyprofileIndexRoute: typeof DashboardMyprofileIndexRoute
+}
+
+const DashboardMyprofileRouteRouteChildren: DashboardMyprofileRouteRouteChildren =
+  {
+    DashboardMyprofilePaymentRoute: DashboardMyprofilePaymentRoute,
+    DashboardMyprofilePurchasesRoute: DashboardMyprofilePurchasesRoute,
+    DashboardMyprofileWithdrawalsRoute: DashboardMyprofileWithdrawalsRoute,
+    DashboardMyprofileIndexRoute: DashboardMyprofileIndexRoute,
+  }
+
+const DashboardMyprofileRouteRouteWithChildren =
+  DashboardMyprofileRouteRoute._addFileChildren(
+    DashboardMyprofileRouteRouteChildren,
+  )
+
 interface DashboardRouteRouteChildren {
+  DashboardMyprofileRouteRoute: typeof DashboardMyprofileRouteRouteWithChildren
   DashboardProductsRoute: typeof DashboardProductsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardMyprofileRouteRoute: DashboardMyprofileRouteRouteWithChildren,
   DashboardProductsRoute: DashboardProductsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
@@ -230,12 +352,19 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vishal': typeof VishalRoute
+  '/dashboard/myprofile': typeof DashboardMyprofileRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
+  '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
+  '/dashboard/myprofile/withdrawals': typeof DashboardMyprofileWithdrawalsRoute
+  '/shop/$slug/$productId': typeof ShopSlugProductIdRoute
+  '/dashboard/myprofile/': typeof DashboardMyprofileIndexRoute
+  '/shop/$slug': typeof ShopSlugIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -250,6 +379,12 @@ export interface FileRoutesByTo {
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
+  '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
+  '/dashboard/myprofile/withdrawals': typeof DashboardMyprofileWithdrawalsRoute
+  '/shop/$slug/$productId': typeof ShopSlugProductIdRoute
+  '/dashboard/myprofile': typeof DashboardMyprofileIndexRoute
+  '/shop/$slug': typeof ShopSlugIndexRoute
 }
 
 export interface FileRoutesById {
@@ -260,12 +395,19 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vishal': typeof VishalRoute
+  '/dashboard/myprofile': typeof DashboardMyprofileRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
+  '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
+  '/dashboard/myprofile/withdrawals': typeof DashboardMyprofileWithdrawalsRoute
+  '/shop/$slug/$productId': typeof ShopSlugProductIdRoute
+  '/dashboard/myprofile/': typeof DashboardMyprofileIndexRoute
+  '/shop/$slug/': typeof ShopSlugIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -277,12 +419,19 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vishal'
+    | '/dashboard/myprofile'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/sign-up'
     | '/auth/sign-up-success'
     | '/dashboard/products'
     | '/dashboard/'
+    | '/dashboard/myprofile/payment'
+    | '/dashboard/myprofile/purchases'
+    | '/dashboard/myprofile/withdrawals'
+    | '/shop/$slug/$productId'
+    | '/dashboard/myprofile/'
+    | '/shop/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,6 +445,12 @@ export interface FileRouteTypes {
     | '/auth/sign-up-success'
     | '/dashboard/products'
     | '/dashboard'
+    | '/dashboard/myprofile/payment'
+    | '/dashboard/myprofile/purchases'
+    | '/dashboard/myprofile/withdrawals'
+    | '/shop/$slug/$productId'
+    | '/dashboard/myprofile'
+    | '/shop/$slug'
   id:
     | '__root__'
     | '/'
@@ -304,12 +459,19 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vishal'
+    | '/dashboard/myprofile'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/sign-up'
     | '/auth/sign-up-success'
     | '/dashboard/products'
     | '/dashboard/'
+    | '/dashboard/myprofile/payment'
+    | '/dashboard/myprofile/purchases'
+    | '/dashboard/myprofile/withdrawals'
+    | '/shop/$slug/$productId'
+    | '/dashboard/myprofile/'
+    | '/shop/$slug/'
   fileRoutesById: FileRoutesById
 }
 
@@ -320,6 +482,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   VishalRoute: typeof VishalRoute
+  ShopSlugProductIdRoute: typeof ShopSlugProductIdRoute
+  ShopSlugIndexRoute: typeof ShopSlugIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -329,6 +493,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   VishalRoute: VishalRoute,
+  ShopSlugProductIdRoute: ShopSlugProductIdRoute,
+  ShopSlugIndexRoute: ShopSlugIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -346,7 +512,9 @@ export const routeTree = rootRoute
         "/dashboard",
         "/privacy",
         "/terms",
-        "/vishal"
+        "/vishal",
+        "/shop/$slug/$productId",
+        "/shop/$slug/"
       ]
     },
     "/": {
@@ -364,6 +532,7 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
       "children": [
+        "/dashboard/myprofile",
         "/dashboard/products",
         "/dashboard/"
       ]
@@ -376,6 +545,16 @@ export const routeTree = rootRoute
     },
     "/vishal": {
       "filePath": "vishal.tsx"
+    },
+    "/dashboard/myprofile": {
+      "filePath": "dashboard/myprofile/route.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/myprofile/payment",
+        "/dashboard/myprofile/purchases",
+        "/dashboard/myprofile/withdrawals",
+        "/dashboard/myprofile/"
+      ]
     },
     "/auth/forgot-password": {
       "filePath": "auth/forgot-password.tsx",
@@ -400,6 +579,28 @@ export const routeTree = rootRoute
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
+    },
+    "/dashboard/myprofile/payment": {
+      "filePath": "dashboard/myprofile/payment.tsx",
+      "parent": "/dashboard/myprofile"
+    },
+    "/dashboard/myprofile/purchases": {
+      "filePath": "dashboard/myprofile/purchases.tsx",
+      "parent": "/dashboard/myprofile"
+    },
+    "/dashboard/myprofile/withdrawals": {
+      "filePath": "dashboard/myprofile/withdrawals.tsx",
+      "parent": "/dashboard/myprofile"
+    },
+    "/shop/$slug/$productId": {
+      "filePath": "shop/$slug/$productId.tsx"
+    },
+    "/dashboard/myprofile/": {
+      "filePath": "dashboard/myprofile/index.tsx",
+      "parent": "/dashboard/myprofile"
+    },
+    "/shop/$slug/": {
+      "filePath": "shop/$slug/index.tsx"
     }
   }
 }

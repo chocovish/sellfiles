@@ -1,16 +1,15 @@
 'use client';
 
+import { Link, useLocation, useParams, useRouter } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { useParams, usePathname } from 'next/navigation';
 
 interface ShopHeaderProps {
   shopName: string;
 }
 
 export default function ShopHeader({ shopName }: ShopHeaderProps) {
-  const params = useParams();
-  const pathname = usePathname();
+  const params = useParams({strict: false});
+  const pathname = useLocation().pathname;
   const slug = params?.slug as string;
   
   // Check if we're on the product page (has productId in params)
@@ -22,7 +21,8 @@ export default function ShopHeader({ shopName }: ShopHeaderProps) {
         <div className="w-1/3">
           {isProductPage && (
             <Link 
-              href={`/shop/${slug}`}
+              to={"/shop/$slug"}
+              params={{ slug }}
               className="flex items-center gap-2 text-purple-600 hover:text-purple-700 group"
             >
               <ArrowLeft className="w-6 h-6 transition-transform group-hover:-translate-x-1" />

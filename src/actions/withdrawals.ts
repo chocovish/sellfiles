@@ -23,7 +23,8 @@ export interface Withdrawal {
   };
 }
 
-export async function getWithdrawals() {
+export const getWithdrawals = createServerFn()
+  .handler(async () => {
     const { id: userId } = await requireAuth();
 
     const withdrawals = await prisma.withdrawal.findMany({
@@ -31,65 +32,74 @@ export async function getWithdrawals() {
         userId,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
 
-    return withdrawals.map(withdrawal => ({
+    return withdrawals.map((withdrawal) => ({
       id: withdrawal.id,
       amount: withdrawal.amount,
       status: withdrawal.status,
       createdAt: withdrawal.createdAt,
       bankDetails: JSON.parse(withdrawal.bankDetails),
-      transactionDetails: JSON.parse(withdrawal.transactionDetails ?? '{}')
+      transactionDetails: JSON.parse(withdrawal.transactionDetails ?? '{}'),
     }));
-}
-
-export async function requestWithdrawal(data: WithdrawalRequest) {
-  
-  const { id: userId } = await requireAuth();
-
-  // Get user's current balance
-  const user = await prisma.user.findUnique({
-    where: { id: userId }
   });
 
-  if (!user || user.balance < data.amount) {
-    throw new Error('Insufficient balance');
-  }
+export const requestWithdrawal = createServerFn()
+  .validator(
+    zv(
+      z.object({
+        amount: z.number().positive(),
+      })
+    )
+  )
+  .handler(async ({ data }) => {
+    const { id: userId } = await requireAuth();
 
-  // Get user's payment method
-  const paymentMethod = await prisma.paymentMethod.findUnique({
-    where: { userId }
-  });
+    // Get user's current balance
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
 
-  if (!paymentMethod) {
-    throw new Error('No payment method found. Please add a payment method in your profile settings.');
-  }
-
-  // Create withdrawal request
-  const withdrawal = await prisma.withdrawal.create({
-    data: {
-      userId,
-      amount: data.amount,
-      bankDetails: JSON.stringify(paymentMethod.details)
+    if (!user || user.balance < data.amount) {
+      throw new Error('Insufficient balance');
     }
-  });
 
-  // Deduct amount from user's balance
-  await prisma.user.update({
-    where: { id: userId },
-    data: { balance: user.balance - data.amount }
-  });
+    // Get user's payment method
+    const paymentMethod = await prisma.paymentMethod.findUnique({
+      where: { userId },
+    });
 
-  return withdrawal;
-}
+    if (!paymentMethod) {
+      throw new Error(
+        'No payment method found. Please add a payment method in your profile settings.'
+      );
+    }
+
+    // Create withdrawal request
+    const withdrawal = await prisma.withdrawal.create({
+      data: {
+        userId,
+        amount: data.amount,
+        bankDetails: JSON.stringify(paymentMethod.details),
+      },
+    });
+
+    // Deduct amount from user's balance
+    await prisma.user.update({
+      where: { id: userId },
+      data: { balance: user.balance - data.amount },
+    });
+
+    return withdrawal;
+  });
 
 export const getUserBalance = createServerFn()
   .validator(
     zv(z.object({
       userId: z.string().optional(), // Optional if you want to allow passing userId explicitly
-    }))
+    }).optional())
   )
   .handler(async ({data: { userId } = {}}) => {
     const { id: authenticatedUserId } = await requireAuth();
@@ -155,12 +165,20 @@ export const getUserBalance = createServerFn()
     return calculatedBalance;
   });
 
-export async function deleteWithdrawal(withdrawalId: string) {
-  const { id: userId } = await requireAuth();
+export const deleteWithdrawal = createServerFn()
+  .validator(
+    zv(
+      z.object({
+        withdrawalId: z.string(),
+      })
+    )
+  )
+  .handler(async ({ data }) => {
+    const { id: userId } = await requireAuth();
 
     // Find the withdrawal and verify ownership
     const withdrawal = await prisma.withdrawal.findUnique({
-      where: { id: withdrawalId }
+      where: { id: data.withdrawalId },
     });
 
     if (!withdrawal) {
@@ -179,18 +197,18 @@ export async function deleteWithdrawal(withdrawalId: string) {
     await prisma.$transaction([
       // Delete the withdrawal
       prisma.withdrawal.delete({
-        where: { id: withdrawalId }
+        where: { id: data.withdrawalId },
       }),
       // Refund the amount back to user's balance
       prisma.user.update({
         where: { id: userId },
         data: {
           balance: {
-            increment: withdrawal.amount
-          }
-        }
-      })
+            increment: withdrawal.amount,
+          },
+        },
+      }),
     ]);
 
     return { success: true };
-} 
+  });
