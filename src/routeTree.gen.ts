@@ -15,6 +15,7 @@ import { Route as VishalImport } from './routes/vishal'
 import { Route as TermsImport } from './routes/terms'
 import { Route as RefundImport } from './routes/refund'
 import { Route as PrivacyImport } from './routes/privacy'
+import { Route as ContactUsImport } from './routes/contact-us'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as IndexImport } from './routes/index'
@@ -55,6 +56,12 @@ const RefundRoute = RefundImport.update({
 const PrivacyRoute = PrivacyImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContactUsRoute = ContactUsImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -179,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsImport
       parentRoute: typeof rootRoute
     }
     '/privacy': {
@@ -363,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/contact-us': typeof ContactUsRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
@@ -385,6 +400,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/contact-us': typeof ContactUsRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
@@ -408,6 +424,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/contact-us': typeof ContactUsRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/terms': typeof TermsRoute
@@ -433,6 +450,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/contact-us'
     | '/privacy'
     | '/refund'
     | '/terms'
@@ -454,6 +472,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/contact-us'
     | '/privacy'
     | '/refund'
     | '/terms'
@@ -475,6 +494,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/contact-us'
     | '/privacy'
     | '/refund'
     | '/terms'
@@ -499,6 +519,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  ContactUsRoute: typeof ContactUsRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundRoute: typeof RefundRoute
   TermsRoute: typeof TermsRoute
@@ -511,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  ContactUsRoute: ContactUsRoute,
   PrivacyRoute: PrivacyRoute,
   RefundRoute: RefundRoute,
   TermsRoute: TermsRoute,
@@ -532,6 +554,7 @@ export const routeTree = rootRoute
         "/",
         "/auth",
         "/dashboard",
+        "/contact-us",
         "/privacy",
         "/refund",
         "/terms",
@@ -559,6 +582,9 @@ export const routeTree = rootRoute
         "/dashboard/products",
         "/dashboard/"
       ]
+    },
+    "/contact-us": {
+      "filePath": "contact-us.tsx"
     },
     "/privacy": {
       "filePath": "privacy.tsx"

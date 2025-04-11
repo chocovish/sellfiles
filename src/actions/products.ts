@@ -1,6 +1,6 @@
 
 import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
+import { auth, requireAuth } from '@/lib/auth';
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { zv } from '~/lib/utils';
@@ -101,25 +101,19 @@ export const createProduct = createServerFn()
       throw new Error('Failed to create product');
     }
   });
-
+export const updateProductInputSchema = createProductInputSchema.partial().extend({ id: z.string() });
 export const updateProduct = createServerFn()
   .validator(
-    zv(
-      z.object({
-        id: z.string(),
-        data: z.object({
-          title: z.string().optional(),
-          description: z.string().optional(),
-          price: z.number().optional(),
-          imageUrl: z.string().optional(),
-          fileUrl: z.string().optional(),
-          isVisible: z.boolean().optional(),
-          displayOrder: z.number().optional()
-        })
-      })
-    )
+    zv(updateProductInputSchema)
   )
-  .handler(async ({ data: { id, data } }) => {
+  .handler(async ({ data: { id, ...data } }) => {
+    // TODO: Check if user is owner of product
+    const user = await requireAuth();
+    if (
+      await prisma.product.count({
+        where: { id, userId: user.id }
+      }) === 0
+    ) throw new Error('logged in user is not owner of product');
     try {
       const product = await prisma.product.update({
         where: { id },

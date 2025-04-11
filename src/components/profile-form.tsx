@@ -252,7 +252,7 @@ export function ProfileForm() {
                         <p className="mt-1 text-sm text-red-600">{errors.shopSlug.message}</p>
                       )}
                       <p className="mt-1 text-xs text-gray-500">
-                        This will be used for your shop's public URL. Use only letters, numbers, and hyphens.
+                        This will be used for your shop's public URL. Use only lowercase letters, numbers, and hyphens.
                       </p>
                     </div>
                   )}

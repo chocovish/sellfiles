@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/dropzone';
 import { toast } from 'sonner';
 import { RichTextEditor } from '@/components/rich-text/rich-text-editor';
-import {type createProductInputSchema} from "@/actions/products"
+import {type createProductInputSchema, type updateProductInputSchema} from "@/actions/products"
 type Product = {
   id: string;
   title: string;
@@ -43,25 +43,30 @@ type Product = {
 
 type ProductFormProps = {
   initialData?: Partial<Product>;
-  onSubmit: (data: z.infer<typeof createProductInputSchema> ) => Promise<void>;
+  onSubmit: (data: z.infer<typeof createProductInputSchema | typeof updateProductInputSchema> ) => Promise<void>;
   onClose: () => void;
   mode: 'create' | 'edit';
 };
 
-const productFormSchema = z.object({
+const productFormSchemaCreate = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.number().min(0, 'Price must be positive'),
-  thumbnail: z.custom<FileList>(),
-  productFile: z.custom<FileList>(),
+  thumbnail: z.custom<FileList>().
+  refine((files) => files?.length > 0, 'Product file is required')
+  .refine((files) => files?.[0]?.size <= 10 * 1024 * 1024, 'File size must be less than 10MB'),
+  productFile: z.custom<FileList>().refine((files) => files?.length > 0, 'Product file is required')
+  .refine((files) => files?.[0]?.size <= 10 * 1024 * 1024, 'File size must be less than 10MB'),
 });
+
+const productFormSchemaUpdate = productFormSchemaCreate.partial();
 
 export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFormProps) {
   const [thumbnailPreview, setThumbnailPreview] = useState<string>(initialData?.imageUrl || '');
   const [filePreview, setFilePreview] = useState<string>(initialData?.fileUrl || '');
 
-  const form = useForm<z.infer<typeof productFormSchema>>({
-    resolver: zodResolver(productFormSchema),
+  const form = useForm({
+    resolver: zodResolver(mode === 'create' ? productFormSchemaCreate : productFormSchemaUpdate),
     defaultValues: {
       title: initialData?.title || '',
       description: initialData?.description || '',
@@ -69,7 +74,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
     },
   });
 
-  const handleFormSubmit = async (formData: z.infer<typeof productFormSchema>) => {
+  const handleFormSubmit = async (formData: z.infer<typeof productFormSchemaCreate | typeof productFormSchemaUpdate>) => {
     try {
       const thumbnailFile = formData.thumbnail?.[0];
       const productFile = formData.productFile?.[0];
@@ -86,16 +91,28 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
         const result = await uploadFile(productFile, 'products');
         fileUrl = result.fileUrl;
       }
-
-      const data = {
-        title: formData.title,
-        description: formData.description,
-        price: formData.price,
-        imageUrl,
-        fileUrl,
-      };
-
-      await onSubmit(data);
+      if (mode === 'create') {
+        let createFormData = formData as z.infer<typeof productFormSchemaCreate>;
+        const data = {
+          title: createFormData.title,
+          description: createFormData.description,
+          price: createFormData.price,
+          imageUrl,
+          fileUrl,
+        }
+        await onSubmit(data)
+      } else {
+        let updateFormData = formData as z.infer<typeof productFormSchemaUpdate>;
+        const data = {
+          id: initialData!.id!,
+          title: updateFormData.title,
+          description: updateFormData.description,
+          price: updateFormData.price,
+          imageUrl,
+          fileUrl,
+        }
+        await onSubmit(data)
+      }
       form.reset();
       toast.success('Product saved successfully');
     } catch (error) {
@@ -129,7 +146,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <RichTextEditor
-                    value={field.value}
+                    value={field.value ?? ""}
                     onChange={field.onChange}
                   />
                 </FormControl>

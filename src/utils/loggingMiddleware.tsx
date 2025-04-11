@@ -17,6 +17,7 @@ const preLogMiddleware = createMiddleware()
     const serverTime = new Date()
 
     return ctx.next({
+      context: {abcd: 'gggggg'},
       sendContext: {
         serverTime,
         durationToServer:

@@ -1,9 +1,33 @@
 import { z } from "zod";
+import { getUserBySlug } from "@/actions/profile";
 
 export const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   userType: z.enum(["buyer", "seller"]),
-  shopSlug: z.string().min(3, "Shop slug must be at least 3 characters").optional(),
+  shopSlug: z.string()
+    .min(3, "Shop slug must be at least 3 characters")
+    .regex(/^[a-z0-9-]+$/, "Shop slug can only contain lowercase letters, numbers, and hyphens")
+    .optional()
+    .superRefine(async (slug, ctx) => {
+      if (!slug) return true;
+      try {
+        const existingUser = await getUserBySlug({ data: slug });
+        if (existingUser) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This shop URL is already taken. Please choose another one.",
+          });
+          return false;
+        }
+        return true;
+      } catch (error) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Error checking shop URL availability. Please try again.",
+        });
+        return false;
+      }
+    }),
   image: z.string().optional().nullable(),
 });
 

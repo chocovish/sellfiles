@@ -29,7 +29,7 @@ function RefundPolicy() {
           <li>Any supporting evidence (e.g., screenshots)</li>
         </ul>
         <p className="mb-4">
-          Our team will manually verify the claim and respond within 3-5 business days.
+          Our team will manually verify the claim and initiate refund within 3-5 business days.
         </p>
         <h2 className="text-2xl font-semibold mt-8 mb-4">Important Notes</h2>
         <p>

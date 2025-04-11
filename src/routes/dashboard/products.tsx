@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Card } from '@/components/ui/card';
@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ProductForm } from '@/components/ui/product-form';
-import { getProducts, createProduct, type createProductInputSchema, updateProduct, updateProductsOrder, toggleProductVisibility, deleteProduct } from '@/actions/products';
+import { getProducts, createProduct, type createProductInputSchema, updateProduct, updateProductsOrder, toggleProductVisibility, deleteProduct, updateProductInputSchema } from '@/actions/products';
 import { Pencil, Eye, EyeOff, Trash2, Search, GripVertical, X, Info, Save, RotateCcw, Download, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUserProfile } from '@/hooks/use-user';
+import { z } from 'zod';
 
 export const Route = createFileRoute('/dashboard/products')({
   component: ProductsPage,
@@ -167,12 +168,12 @@ function ProductsPage() {
     setSelectedProduct(null);
   };
 
-  const handleSave = async (data: Zod.infer<typeof createProductInputSchema>) => {
+  const handleSave = async (data: Zod.infer<typeof createProductInputSchema |typeof updateProductInputSchema>) => {
     try {
       if (isEditing === 'new') {
-        await createProduct({data});
+        await createProduct({data: data as z.infer<typeof createProductInputSchema>});
       } else if (isEditing) {
-        await updateProduct({data: {data, id: isEditing}});
+        await updateProduct({data: {...data, id: isEditing}});
       }
       setIsEditing(null);
       fetchProducts();
@@ -427,7 +428,7 @@ function ProductDetailDialog({
   if (!product) return null;
   const handleShareProduct = () => {
     // Create a URL for the product
-    const productUrl = `${window.location.origin}/shop/${userProfile?.shopSlug}}/${product.id}`;
+    const productUrl = `${window.location.origin}/shop/${userProfile?.shopSlug}/${product.id}`;
     
     // Copy the URL to clipboard
     navigator.clipboard.writeText(productUrl)
@@ -496,9 +497,11 @@ function ProductDetailDialog({
                 </div>
                 
                 {product.fileUrl && (
-                  <Button variant="outline" className="bg-white/80 hover:bg-white dark:bg-gray-800 dark:hover:bg-gray-700">
-                    <Download className="h-4 w-4 mr-2" /> Download File
-                  </Button>
+                  <Link to={product.fileUrl} target="_blank">
+                    <Button variant="outline" className=" w-full bg-white/80 hover:bg-white dark:bg-gray-800 dark:hover:bg-gray-700">
+                      <Download className="h-4 w-4 mr-2" /> Download File
+                    </Button>
+                  </Link>
                 )}
                 
                 <Button 

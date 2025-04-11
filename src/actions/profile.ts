@@ -3,12 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { profileSchema, paymentMethodSchema } from "@/lib/validations/profile";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { zv } from "~/lib/utils";
+import { zv, zva } from "~/lib/utils";
+import { logMiddleware } from "~/utils/loggingMiddleware";
 // import { revalidatePath } from "next/cache";
 
 export const updateProfile = createServerFn()
-  .validator(zv(profileSchema))
-  .handler(async ({ data }) => {
+  .validator(zva(profileSchema))
+  .handler(async ({ data: dataAsync }) => {
+    const data = await dataAsync;
     const user = await auth();
     if (!user?.id) {
       throw new Error("Unauthorized");

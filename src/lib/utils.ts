@@ -23,7 +23,13 @@ export function dateKeyMaker(timeframe: 'day' | 'month' | 'year', date: Date) {
   }
   return dateKey;
 }
-
+// for async validation
+export function zva<T>(schema: z.ZodSchema<T>) {
+  return async (data: z.infer<typeof schema>): Promise<T> => {
+    return await schema.parseAsync(data);
+  };
+}
+// for sync validation
 export function zv<T>(schema: z.ZodSchema<T>) {
   return (data: z.infer<typeof schema>): T => {
     return schema.parse(data);

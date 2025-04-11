@@ -92,17 +92,21 @@ function Home() {
         
         {/* Footer Links */}
         <footer className="mt-auto py-6 text-center">
-          <div className="flex justify-center items-center gap-4 text-white/80 text-sm">
+          <div className="max-w-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 text-white/80 text-sm">
             <Link to="/terms" className="hover:text-white hover:underline transition">
               Terms & Conditions
             </Link>
-            <span>•</span>
+            {/* <span>•</span> */}
             <Link to="/privacy" className="hover:text-white hover:underline transition">
               Privacy Policy
             </Link>
-            <span>•</span>
+            {/* <span>•</span> */}
             <Link to="/refund" className="hover:text-white hover:underline transition">
               Refund Policy
+            </Link>
+            {/* <span>•</span> */}
+            <Link to="/contact-us" className="hover:text-white hover:underline transition">
+              Contact Us
             </Link>
           </div>
         </footer>
