@@ -75,7 +75,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         },
       })
       if (error) throw error
-      router.navigate({to: '/auth/verify-email'})
+      router.navigate({to: '/auth/sign-up-success'})
     } catch (error: any) {
       setError("root", {message: error?.message ?? 'An error occurred'}, {shouldFocus: true})
     } 
