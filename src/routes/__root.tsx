@@ -28,7 +28,24 @@ export const Route = createRootRoute({
       ...seo({
         title:
           'Sellfiles',
-        description: `A full-stack React framework for building modern web applications `,
+        description: `Sell digital goods with no monthly fees. Only 4% when you sell.`,
+        image: `/brand-logo.png`,
+        keywords: [
+          'sellfiles',
+          'sell digital goods',
+          'digital goods',
+          'digital products',
+          'digital downloads',
+          'digital sales',
+          'digital product sales',
+          'digital product marketplace',
+          'digital product selling',
+          'digital product platform',
+          'digital product store',
+          'digital product management',
+          'digital product distribution',
+          'digital product marketing',
+        ].join(', '),
       }),
     ],
     links: [
