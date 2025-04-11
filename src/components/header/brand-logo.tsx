@@ -32,7 +32,7 @@ export function BrandLogo({ variant = 'light', size = 'lg' }: BrandLogoProps) {
       className={`${sizeClasses[size]} filter ${brightness[variant]} transition-all duration-300 group-hover:scale-105`} 
     />
     // <h1 className={`font-bold bg-gradient-to-r ${gradientClasses[variant]} ${sizeClasses[size]} bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105 ${"dancingScript.className"}`}>
-    //   SellFiles.me
+    //   {import.meta.env.VITE_APP_URL}
     // </h1>
   );
 } 

@@ -13,7 +13,7 @@ function RefundPolicy() {
       <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-lg">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6">Refund Policy</h1>
         <p className="text-lg sm:text-xl mb-4">
-          At SellFiles.me, we strive to ensure customer satisfaction with every purchase. However, as our platform deals with digital products, refunds are only provided under specific circumstances.
+          At {import.meta.env.VITE_APP_URL}, we strive to ensure customer satisfaction with every purchase. However, as our platform deals with digital products, refunds are only provided under specific circumstances.
         </p>
         <h2 className="text-2xl font-semibold mt-8 mb-4">Eligibility for Refund</h2>
         <p className="mb-4">
@@ -21,7 +21,7 @@ function RefundPolicy() {
         </p>
         <h2 className="text-2xl font-semibold mt-8 mb-4">How to Raise a Dispute</h2>
         <p className="mb-4">
-          To raise a dispute, please send an email to <a href="mailto:contact@sellfiles.me" className="font-bold underline">contact@sellfiles.me</a> with the following details:
+          To raise a dispute, please send an email to <a href="mailto:contact@{import.meta.env.VITE_APP_URL}" className="font-bold underline">contact@{import.meta.env.VITE_APP_URL}</a> with the following details:
         </p>
         <ul className="list-disc list-inside mb-4">
           <li>Your order ID</li>
@@ -41,7 +41,7 @@ function RefundPolicy() {
           <li>Issues caused by third-party software or hardware</li>
         </ul>
         <p>
-          By purchasing from SellFiles.me, you agree to this refund policy.
+          By purchasing from {import.meta.env.VITE_APP_URL}, you agree to this refund policy.
         </p>
         </div>
       </main>

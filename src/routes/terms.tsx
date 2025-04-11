@@ -17,17 +17,17 @@ function TermsPage() {
           <div className="space-y-6 text-gray-700">
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">1. Introduction</h2>
-              <p>Welcome to noSubs. These Terms and Conditions govern your use of our platform and services. By accessing or using noSubs, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.</p>
+              <p>Welcome to {import.meta.env.VITE_APP_URL}. These Terms and Conditions govern your use of our platform and services. By accessing or using {import.meta.env.VITE_APP_URL}, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.</p>
             </section>
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">2. Platform Overview</h2>
-              <p>noSubs operates as an aggregator platform that connects digital product sellers with buyers. We do not sell or create the products offered on our platform. We simply provide the technology and services to facilitate transactions between users.</p>
+              <p>{import.meta.env.VITE_APP_URL} operates as an aggregator platform that connects digital product sellers with buyers. We do not sell or create the products offered on our platform. We simply provide the technology and services to facilitate transactions between users.</p>
             </section>
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">3. Seller Obligations</h2>
-              <p>As a seller on noSubs, you are obligated to:</p>
+              <p>As a seller on {import.meta.env.VITE_APP_URL}, you are obligated to:</p>
               <ul className="list-disc pl-6 mt-2 space-y-2">
                 <li>Only sell digital products for which you possess legitimate ownership rights or proper authorization to sell.</li>
                 <li>Refrain from selling any illegal, harmful, offensive, or unauthorized content.</li>
@@ -35,12 +35,12 @@ function TermsPage() {
                 <li>Fulfill all orders promptly and as described.</li>
                 <li>Comply with all applicable laws and regulations.</li>
               </ul>
-              <p className="mt-3">noSubs reserves the right to remove any content that violates these terms or that we reasonably believe may create liability.</p>
+              <p className="mt-3">{import.meta.env.VITE_APP_URL} reserves the right to remove any content that violates these terms or that we reasonably believe may create liability.</p>
             </section>
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">4. Prohibited Content</h2>
-              <p>The following content is strictly prohibited on noSubs:</p>
+              <p>The following content is strictly prohibited on {import.meta.env.VITE_APP_URL}:</p>
               <ul className="list-disc pl-6 mt-2 space-y-2">
                 <li>Content that infringes on intellectual property rights</li>
                 <li>Malware, viruses, or harmful code</li>
@@ -54,27 +54,27 @@ function TermsPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">5. Buyer Responsibilities</h2>
-              <p>As a buyer on noSubs:</p>
+              <p>As a buyer on {import.meta.env.VITE_APP_URL}:</p>
               <ul className="list-disc pl-6 mt-2 space-y-2">
                 <li>You are responsible for evaluating the suitability of any product before purchase.</li>
                 <li>You accept full responsibility for your purchases and their use.</li>
-                <li>You acknowledge that noSubs is not the creator or seller of the products and has no control over their quality or content.</li>
+                <li>You acknowledge that {import.meta.env.VITE_APP_URL} is not the creator or seller of the products and has no control over their quality or content.</li>
                 <li>You agree to use purchased content in accordance with applicable laws and the terms set by the seller.</li>
               </ul>
             </section>
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">6. Reporting Violations</h2>
-              <p>If you encounter content that violates these terms or appears to be illegal, we encourage you to report it immediately. Please email detailed information about the violation to <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
+              <p>If you encounter content that violates these terms or appears to be illegal, we encourage you to report it immediately. Please email detailed information about the violation to <a href="mailto:contact@{import.meta.env.VITE_APP_URL}" className="text-blue-600 hover:underline">contact@{import.meta.env.VITE_APP_URL}</a>.</p>
             </section>
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">7. Limitation of Liability</h2>
-              <p>noSubs serves solely as a platform connecting buyers and sellers. We do not create, review, or endorse any of the content sold on our platform. As such:</p>
+              <p>{import.meta.env.VITE_APP_URL} serves solely as a platform connecting buyers and sellers. We do not create, review, or endorse any of the content sold on our platform. As such:</p>
               <ul className="list-disc pl-6 mt-2 space-y-2">
                 <li>We are not responsible for the quality, safety, or legality of items sold.</li>
                 <li>We make no warranties about the accuracy or reliability of content on our platform.</li>
-                <li>In no event shall noSubs be liable for any indirect, incidental, special, or consequential damages arising from your use of the service.</li>
+                <li>In no event shall {import.meta.env.VITE_APP_URL} be liable for any indirect, incidental, special, or consequential damages arising from your use of the service.</li>
               </ul>
             </section>
             
@@ -85,7 +85,7 @@ function TermsPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">9. Contact Information</h2>
-              <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
+              <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:contact@{import.meta.env.VITE_APP_URL}" className="text-blue-600 hover:underline">contact@{import.meta.env.VITE_APP_URL}</a>.</p>
             </section>
           </div>
         </div>

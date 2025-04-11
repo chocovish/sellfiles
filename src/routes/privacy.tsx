@@ -17,7 +17,7 @@ function PrivacyPage() {
           <div className="space-y-6 text-gray-700">
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">1. Introduction</h2>
-              <p>At noSubs, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read this policy carefully to understand our practices regarding your personal data.</p>
+              <p>At {import.meta.env.VITE_APP_URL}, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read this policy carefully to understand our practices regarding your personal data.</p>
             </section>
             
             <section>
@@ -57,7 +57,7 @@ function PrivacyPage() {
                 <li>In connection with a merger, sale, or acquisition of all or a portion of our company</li>
                 <li>With your consent or at your direction</li>
               </ul>
-              <p className="mt-3">noSubs does not sell your personal information to third parties.</p>
+              <p className="mt-3">{import.meta.env.VITE_APP_URL} does not sell your personal information to third parties.</p>
             </section>
             
             <section>
@@ -79,7 +79,7 @@ function PrivacyPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">7. Content Reporting</h2>
-              <p>If you believe any content on our platform violates our policies, infringes upon intellectual property rights, or is otherwise illegal, please report it to <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a> with detailed information about the violation.</p>
+              <p>If you believe any content on our platform violates our policies, infringes upon intellectual property rights, or is otherwise illegal, please report it to <a href="mailto:contact@{import.meta.env.VITE_APP_URL}" className="text-blue-600 hover:underline">contact@{import.meta.env.VITE_APP_URL}</a> with detailed information about the violation.</p>
             </section>
             
             <section>
@@ -89,7 +89,7 @@ function PrivacyPage() {
             
             <section>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">9. Contact Information</h2>
-              <p>If you have questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:contact@sellfiles.me" className="text-blue-600 hover:underline">contact@sellfiles.me</a>.</p>
+              <p>If you have questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:contact@{import.meta.env.VITE_APP_URL}" className="text-blue-600 hover:underline">contact@{import.meta.env.VITE_APP_URL}</a>.</p>
             </section>
           </div>
         </div>
