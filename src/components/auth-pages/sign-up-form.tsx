@@ -70,7 +70,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             name,
-            user_type: userType
+            userType: userType
           }
         },
       })
