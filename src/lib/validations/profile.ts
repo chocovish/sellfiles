@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getUserBySlug } from "@/actions/profile";
+// import { getUserBySlug } from "@/actions/profile";
 
 export const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -11,6 +11,7 @@ export const profileSchema = z.object({
     .superRefine(async (slug, ctx) => {
       if (!slug) return true;
       try {
+        const {getUserBySlug} = await import("@/actions/profile")
         const existingUser = await getUserBySlug({ data: slug });
         if (existingUser) {
           ctx.addIssue({

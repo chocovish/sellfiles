@@ -1,9 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { profileSchema, paymentMethodSchema } from "@/lib/validations/profile";
+import { paymentMethodSchema, profileSchema } from "@/lib/validations/profile";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { zv, zva } from "~/lib/utils";
+import {zodValidator} from "@tanstack/zod-adapter";
 import { logMiddleware } from "~/utils/loggingMiddleware";
 // import { revalidatePath } from "next/cache";
 
