@@ -118,7 +118,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               Continue with Google
             </Button>
             
-            <Button 
+            {/* <Button 
               onClick={handleFacebookLogin}
               variant="outline" 
               size="lg"
@@ -126,7 +126,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             >
               <Facebook className="h-5 w-5 text-[#1877F2]" />
               Continue with Facebook
-            </Button>
+            </Button> */}
             
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">

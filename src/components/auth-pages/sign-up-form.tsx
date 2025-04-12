@@ -160,7 +160,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
               Continue with Google
             </Button>
             
-            <Button 
+            {/* <Button 
               onClick={handleFacebookSignUp}
               variant="outline" 
               size="lg"
@@ -168,7 +168,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             >
               <Facebook className="h-5 w-5 text-[#1877F2]" />
               Continue with Facebook
-            </Button>
+            </Button> */}
             
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">
