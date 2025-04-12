@@ -1,4 +1,3 @@
-
 import { prisma } from '@/lib/prisma';
 import { auth, requireAuth } from '@/lib/auth';
 import { createServerFn } from '@tanstack/react-start';
@@ -13,16 +12,18 @@ export type Product = {
   imageUrl: string;
   fileUrl: string;
   isVisible: boolean;
+  isArchived: boolean;
   displayOrder: number;
 };
 
 export const getProducts = createServerFn()
   .validator(
     zv(z.object({
-      userId: z.string().optional()
+      userId: z.string().optional(),
+      includeArchived: z.boolean().optional().default(false)
     }))
   )
-  .handler(async ({data: { userId }}) => {
+  .handler(async ({data: { userId, includeArchived }}) => {
     const user = await auth();
     userId = userId ?? user?.id;
     if (!userId) {
@@ -30,7 +31,10 @@ export const getProducts = createServerFn()
     }
     try {
       const products = await prisma.product.findMany({
-        where: { userId },
+        where: { 
+          userId,
+          isArchived: includeArchived ? undefined : false
+        },
         orderBy: { displayOrder: 'asc' }
       });
       return products;
@@ -214,5 +218,61 @@ export const getProductById = createServerFn()
     } catch (error) {
       console.error('Error fetching product by ID:', error);
       throw new Error('Failed to fetch product by ID');
+    }
+  });
+
+export const archiveProduct = createServerFn()
+  .validator(
+    zv(
+      z.object({
+        id: z.string()
+      })
+    )
+  )
+  .handler(async ({ data: { id } }) => {
+    try {
+      const user = await requireAuth();
+      if (
+        await prisma.product.count({
+          where: { id, userId: user.id }
+        }) === 0
+      ) throw new Error('logged in user is not owner of product');
+      
+      const product = await prisma.product.update({
+        where: { id },
+        data: { isArchived: true, isVisible: false }
+      });
+      return product;
+    } catch (error) {
+      console.error('Error archiving product:', error);
+      throw new Error('Failed to archive product');
+    }
+  });
+
+export const restoreProduct = createServerFn()
+  .validator(
+    zv(
+      z.object({
+        id: z.string()
+      })
+    )
+  )
+  .handler(async ({ data: { id } }) => {
+    try {
+      const user = await requireAuth();
+      if (
+        await prisma.product.count({
+          where: { id, userId: user.id }
+        }) === 0
+      ) throw new Error('logged in user is not owner of product');
+      
+      const product = await prisma.product.update({
+        where: { id },
+        data: { isArchived: false }
+      });
+      return product;
+    } catch (error) {
+      console.error('Error restoring product:', error);
+      throw new Error('Failed to restore product');
     }
   });

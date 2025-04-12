@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ProductForm } from '@/components/ui/product-form';
-import { getProducts, createProduct, type createProductInputSchema, updateProduct, updateProductsOrder, toggleProductVisibility, deleteProduct, updateProductInputSchema } from '@/actions/products';
-import { Pencil, Eye, EyeOff, Trash2, Search, GripVertical, X, Info, Save, RotateCcw, Download, Share2 } from 'lucide-react';
+import { getProducts, createProduct, type createProductInputSchema, updateProduct, updateProductsOrder, toggleProductVisibility, archiveProduct, updateProductInputSchema } from '@/actions/products';
+import { Pencil, Eye, EyeOff, Trash2, Search, GripVertical, X, Info, Save, RotateCcw, Download, Share2, Archive } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUserProfile } from '@/hooks/use-user';
 import { z } from 'zod';
@@ -24,6 +24,7 @@ type Product = {
   imageUrl: string;
   fileUrl: string;
   isVisible: boolean;
+  isArchived: boolean;
   displayOrder: number;
   thumbnail?: File[];
   productFile?: File[],
@@ -150,14 +151,15 @@ function ProductsPage() {
     }
   };
 
-  const handleDelete = async (product: Product) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+  const handleArchive = async (product: Product) => {
+    if (window.confirm('Are you sure you want to archive this product? It will be hidden from your shop but can be restored later.')) {
       try {
-        await deleteProduct({data: {id: product.id}});
-        toast.success('Product deleted successfully');
+        await archiveProduct({data: {id: product.id}});
+        toast.success('Product archived successfully');
         fetchProducts();
       } catch (error) {
-        console.error('Error deleting product:', error);
+        console.error('Error archiving product:', error);
+        toast.error('Failed to archive product');
       }
     }
   };
@@ -191,13 +193,18 @@ function ProductsPage() {
       <div className="container mx-auto md:p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Manage Products</h1>
-          <Button variant="gradient" onClick={() => {
-            if (isEditing === 'new') {
-              setIsEditing(null);
-            } else {
-              setIsEditing('new');
-            }
-          }}>Add Product</Button>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/dashboard/archived-products">View Archived</Link>
+            </Button>
+            <Button variant="gradient" onClick={() => {
+              if (isEditing === 'new') {
+                setIsEditing(null);
+              } else {
+                setIsEditing('new');
+              }
+            }}>Add Product</Button>
+          </div>
         </div>
 
         {isEditing === "new" && ( 
@@ -384,9 +391,9 @@ function ProductsPage() {
                         variant="ghost"
                         size="icon"
                         className="text-red-500 hover:text-red-600"
-                        onClick={() => handleDelete(product)}
+                        onClick={() => handleArchive(product)}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Archive className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>

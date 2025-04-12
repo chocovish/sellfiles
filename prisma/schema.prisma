@@ -44,6 +44,7 @@ model Product {
   imageUrl    String
   fileUrl     String
   isVisible   Boolean  @default(true)
+  isArchived  Boolean  @default(false)
   displayOrder Int     @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

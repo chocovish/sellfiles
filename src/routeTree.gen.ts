@@ -21,6 +21,7 @@ import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardProductsImport } from './routes/dashboard/products'
+import { Route as DashboardArchivedProductsImport } from './routes/dashboard/archived-products'
 import { Route as AuthSignUpSuccessImport } from './routes/auth/sign-up-success'
 import { Route as AuthSignUpImport } from './routes/auth/sign-up'
 import { Route as AuthLoginImport } from './routes/auth/login'
@@ -92,6 +93,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
 const DashboardProductsRoute = DashboardProductsImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardArchivedProductsRoute = DashboardArchivedProductsImport.update({
+  id: '/archived-products',
+  path: '/archived-products',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
@@ -258,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpSuccessImport
       parentRoute: typeof AuthRouteImport
     }
+    '/dashboard/archived-products': {
+      id: '/dashboard/archived-products'
+      path: '/archived-products'
+      fullPath: '/dashboard/archived-products'
+      preLoaderRoute: typeof DashboardArchivedProductsImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/dashboard/products': {
       id: '/dashboard/products'
       path: '/products'
@@ -359,12 +373,14 @@ const DashboardMyprofileRouteRouteWithChildren =
 
 interface DashboardRouteRouteChildren {
   DashboardMyprofileRouteRoute: typeof DashboardMyprofileRouteRouteWithChildren
+  DashboardArchivedProductsRoute: typeof DashboardArchivedProductsRoute
   DashboardProductsRoute: typeof DashboardProductsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardMyprofileRouteRoute: DashboardMyprofileRouteRouteWithChildren,
+  DashboardArchivedProductsRoute: DashboardArchivedProductsRoute,
   DashboardProductsRoute: DashboardProductsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
@@ -387,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
+  '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
@@ -409,6 +426,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
+  '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
@@ -434,6 +452,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
+  '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
@@ -460,6 +479,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/sign-up'
     | '/auth/sign-up-success'
+    | '/dashboard/archived-products'
     | '/dashboard/products'
     | '/dashboard/'
     | '/dashboard/myprofile/payment'
@@ -481,6 +501,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/sign-up'
     | '/auth/sign-up-success'
+    | '/dashboard/archived-products'
     | '/dashboard/products'
     | '/dashboard'
     | '/dashboard/myprofile/payment'
@@ -504,6 +525,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/sign-up'
     | '/auth/sign-up-success'
+    | '/dashboard/archived-products'
     | '/dashboard/products'
     | '/dashboard/'
     | '/dashboard/myprofile/payment'
@@ -579,6 +601,7 @@ export const routeTree = rootRoute
       "filePath": "dashboard/route.tsx",
       "children": [
         "/dashboard/myprofile",
+        "/dashboard/archived-products",
         "/dashboard/products",
         "/dashboard/"
       ]
@@ -623,6 +646,10 @@ export const routeTree = rootRoute
     "/auth/sign-up-success": {
       "filePath": "auth/sign-up-success.tsx",
       "parent": "/auth"
+    },
+    "/dashboard/archived-products": {
+      "filePath": "dashboard/archived-products.tsx",
+      "parent": "/dashboard"
     },
     "/dashboard/products": {
       "filePath": "dashboard/products.tsx",
