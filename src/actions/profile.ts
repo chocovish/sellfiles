@@ -4,12 +4,9 @@ import { paymentMethodSchema, profileSchema } from "@/lib/validations/profile";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { zv, zva } from "~/lib/utils";
-import {zodValidator} from "@tanstack/zod-adapter";
-import { logMiddleware } from "~/utils/loggingMiddleware";
-// import { revalidatePath } from "next/cache";
 
 export const updateProfile = createServerFn()
-  .validator(zva(profileSchema))
+  .validator(zva(profileSchema.partial()))
   .handler(async ({ data: dataAsync }) => {
     const data = await dataAsync;
     const user = await auth();

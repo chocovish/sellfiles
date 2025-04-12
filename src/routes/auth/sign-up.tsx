@@ -15,7 +15,7 @@ import { z } from 'zod'
 
 function Page() {
   return (
-    <div className="flex justify-center pt-8 md:pt-16">
+    <div className="flex justify-center my-auto">
       <SignUpForm />
     </div>
   )

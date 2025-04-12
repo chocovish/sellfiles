@@ -8,7 +8,7 @@ import { LoginForm } from '@/components/auth-pages/login-form'
 
 function Page() {
   return (
-    <div className="flex justify-center pt-8 md:pt-16">
+    <div className="flex justify-center my-auto">
       <LoginForm />
     </div>
   )
