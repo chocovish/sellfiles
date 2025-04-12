@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { User, UserCircle, Store, Save, Upload, ShoppingCart, LayoutGrid } from 'lucide-react';
+import { User, UserCircle, Store, Save, Upload, ShoppingCart, LayoutGrid, Lock } from 'lucide-react';
 import { User as UserProfile } from "@prisma/client";
 import { z } from "zod";
 import { uploadFile } from "@/lib/upload";
 import { useUserProfileQuery, useInvalidateUserData } from "@/hooks/use-user-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ChangePasswordDialog } from '@/components/change-password-dialog';
 
 const profileSchemaForForm = profileSchema.extend({
   image: z.custom<FileList>(),
@@ -26,6 +27,7 @@ export function ProfileForm() {
   const { invalidateUserProfile } = useInvalidateUserData();
   const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -78,11 +80,21 @@ export function ProfileForm() {
 
   return (
     <Card className="border-none shadow-md bg-gradient-to-br from-white to-blue-50 overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 flex items-center h-16">
+      <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-between h-16">
         <CardTitle className="text-white flex items-center gap-2 text-lg">
           <UserCircle className="h-5 w-5" />
-          Profile Information
+          Profile Info
         </CardTitle>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+          onClick={() => setIsPasswordDialogOpen(true)}
+        >
+          <Lock className="h-4 w-4 mr-1" />
+          Change Password
+        </Button>
       </CardHeader>
       <CardContent className="max-sm:px-2 max-sm:pt-1 md:pt-6">
         {isLoading ? (
@@ -283,6 +295,10 @@ export function ProfileForm() {
           </form>
         )}
       </CardContent>
+      <ChangePasswordDialog 
+        isOpen={isPasswordDialogOpen} 
+        onClose={() => setIsPasswordDialogOpen(false)} 
+      />
     </Card>
   );
 } 
