@@ -174,12 +174,12 @@ function ProductDetailPage() {
                   className="w-full"
                   aspectRatio="square"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                {/* <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
                   <Tag className="w-5 h-5 text-purple-600" />
                   <span className="font-bold text-purple-600 text-lg">
                   ₹{product.price}
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
 
