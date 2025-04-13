@@ -17,7 +17,8 @@ import {
   Calendar, 
   RefreshCw, 
   ArrowUpRight,
-  Wallet
+  Wallet,
+  Palette
 } from 'lucide-react';
 import { dateKeyMaker } from '@/lib/utils';
 import { LoaderSkeleton } from '@/components/dashboard/loader-skeletone';
@@ -32,7 +33,7 @@ export default function SalesDashboard() {
 
   const {userProfile, isLoading: isLoadingUserProfile, refetch: refetchUserProfile} = useUserProfile();
 
-  const {data: salesData, isLoading: isLoadingSales, refetch: refetchSales, isFetching: isFetchingSales} = useQuery({
+  const {data: salesData = [], isLoading: isLoadingSales, refetch: refetchSales, isFetching: isFetchingSales} = useQuery({
     queryKey: ['salesData', timeframe],
     queryFn: () => getSalesData({data: {timeframe}}),
   });
@@ -54,10 +55,10 @@ export default function SalesDashboard() {
   // Calculate summary statistics for current timeframe (day, month, year)
   const currentDate = new Date();
   const currentDateKey = dateKeyMaker(timeframe, currentDate);
-  const totalSales = salesData!.find(sale => sale.date === currentDateKey)?.amount || 0;
-  const totalTransactions = salesData!.find(sale => sale.date === currentDateKey)?.transactions || 0;
+  const totalSales = salesData.find(sale => sale.date === currentDateKey)?.amount || 0;
+  const totalTransactions = salesData.find(sale => sale.date === currentDateKey)?.transactions || 0;
   const avgOrderValue = totalTransactions > 0 ? totalSales / totalTransactions : 0;
-  const totalUniqueCustomers = salesData!.find(sale => sale.date === currentDateKey)?.uniqueCustomers.size || 0;
+  const totalUniqueCustomers = salesData.find(sale => sale.date === currentDateKey)?.uniqueCustomers?.length || 0;
   
   // Calculate growth percentages by comparing with previous period
   const getPreviousPeriodKey = (currentKey: string, timeframe: 'day' | 'month' | 'year') => {
@@ -76,10 +77,10 @@ export default function SalesDashboard() {
   };
 
   const previousDateKey = getPreviousPeriodKey(currentDateKey, timeframe);
-  const previousSales = salesData!.find(sale => sale.date === previousDateKey)?.amount || 0;
-  const previousTransactions = salesData!.find(sale => sale.date === previousDateKey)?.transactions || 0;
+  const previousSales = salesData.find(sale => sale.date === previousDateKey)?.amount || 0;
+  const previousTransactions = salesData.find(sale => sale.date === previousDateKey)?.transactions || 0;
   const previousAOV = previousTransactions > 0 ? previousSales / previousTransactions : 0;
-  const previousUniqueCustomers = salesData!.find(sale => sale.date === previousDateKey)?.uniqueCustomers.length || 0;
+  const previousUniqueCustomers = salesData.find(sale => sale.date === previousDateKey)?.uniqueCustomers?.length || 0;
 
   // Calculate growth percentages
   const salesGrowth = previousSales > 0 ? ((totalSales - previousSales) / previousSales) * 100 : 0;
@@ -116,7 +117,20 @@ export default function SalesDashboard() {
               >
                 Withdraw Funds
               </Button></Link>
-              
+              <div className="flex gap-2">
+                <Button variant="outline" asChild>
+                  <Link to="/dashboard/products">
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                    Products
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/dashboard/shop-customization">
+                    <Palette className="h-4 w-4 mr-2" />
+                    Customize Shop
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
           {/* Time Controls */}

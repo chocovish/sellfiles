@@ -20,6 +20,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardShopCustomizationImport } from './routes/dashboard/shop-customization'
 import { Route as DashboardProductsImport } from './routes/dashboard/products'
 import { Route as DashboardArchivedProductsImport } from './routes/dashboard/archived-products'
 import { Route as AuthSignUpSuccessImport } from './routes/auth/sign-up-success'
@@ -89,6 +90,14 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+
+const DashboardShopCustomizationRoute = DashboardShopCustomizationImport.update(
+  {
+    id: '/shop-customization',
+    path: '/shop-customization',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any,
+)
 
 const DashboardProductsRoute = DashboardProductsImport.update({
   id: '/products',
@@ -279,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProductsImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/dashboard/shop-customization': {
+      id: '/dashboard/shop-customization'
+      path: '/shop-customization'
+      fullPath: '/dashboard/shop-customization'
+      preLoaderRoute: typeof DashboardShopCustomizationImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -375,6 +391,7 @@ interface DashboardRouteRouteChildren {
   DashboardMyprofileRouteRoute: typeof DashboardMyprofileRouteRouteWithChildren
   DashboardArchivedProductsRoute: typeof DashboardArchivedProductsRoute
   DashboardProductsRoute: typeof DashboardProductsRoute
+  DashboardShopCustomizationRoute: typeof DashboardShopCustomizationRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -382,6 +399,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardMyprofileRouteRoute: DashboardMyprofileRouteRouteWithChildren,
   DashboardArchivedProductsRoute: DashboardArchivedProductsRoute,
   DashboardProductsRoute: DashboardProductsRoute,
+  DashboardShopCustomizationRoute: DashboardShopCustomizationRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -405,6 +423,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard/shop-customization': typeof DashboardShopCustomizationRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
   '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
@@ -428,6 +447,7 @@ export interface FileRoutesByTo {
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard/shop-customization': typeof DashboardShopCustomizationRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
   '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
@@ -454,6 +474,7 @@ export interface FileRoutesById {
   '/auth/sign-up-success': typeof AuthSignUpSuccessRoute
   '/dashboard/archived-products': typeof DashboardArchivedProductsRoute
   '/dashboard/products': typeof DashboardProductsRoute
+  '/dashboard/shop-customization': typeof DashboardShopCustomizationRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/myprofile/payment': typeof DashboardMyprofilePaymentRoute
   '/dashboard/myprofile/purchases': typeof DashboardMyprofilePurchasesRoute
@@ -481,6 +502,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-success'
     | '/dashboard/archived-products'
     | '/dashboard/products'
+    | '/dashboard/shop-customization'
     | '/dashboard/'
     | '/dashboard/myprofile/payment'
     | '/dashboard/myprofile/purchases'
@@ -503,6 +525,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-success'
     | '/dashboard/archived-products'
     | '/dashboard/products'
+    | '/dashboard/shop-customization'
     | '/dashboard'
     | '/dashboard/myprofile/payment'
     | '/dashboard/myprofile/purchases'
@@ -527,6 +550,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-success'
     | '/dashboard/archived-products'
     | '/dashboard/products'
+    | '/dashboard/shop-customization'
     | '/dashboard/'
     | '/dashboard/myprofile/payment'
     | '/dashboard/myprofile/purchases'
@@ -603,6 +627,7 @@ export const routeTree = rootRoute
         "/dashboard/myprofile",
         "/dashboard/archived-products",
         "/dashboard/products",
+        "/dashboard/shop-customization",
         "/dashboard/"
       ]
     },
@@ -653,6 +678,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/products": {
       "filePath": "dashboard/products.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/shop-customization": {
+      "filePath": "dashboard/shop-customization.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/": {

@@ -34,6 +34,7 @@ model User {
   purchases     Sale[]    @relation("Buyer")
   withdrawals   Withdrawal[]
   paymentMethod PaymentMethod?
+  shopCustomization ShopCustomization?
 }
 
 model Product {
@@ -113,4 +114,23 @@ model Thumbnail {
   updatedAt   DateTime @updatedAt
   productId   String
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ShopCustomization {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bannerImage       String?
+  bannerLink        String?
+  bannerText        String?
+  featuredProducts  String[] // Array of product IDs
+  productLayout     String   @default("grid") // grid, list, masonry
+  accentColor       String   @default("#6366f1") // Default indigo color
+  showPrice         Boolean  @default(true)
+  showDescription   Boolean  @default(true)
+  showThumbnails    Boolean  @default(true)
+  customCss         String?
+  customJs          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
