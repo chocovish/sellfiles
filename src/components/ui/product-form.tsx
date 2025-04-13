@@ -27,7 +27,68 @@ import { toast } from 'sonner';
 import { RichTextEditor } from '@/components/rich-text/rich-text-editor';
 import { type createProductInputSchema, type updateProductInputSchema } from "@/actions/products"
 import { Star, X } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+// SortableThumbnail component for dnd-kit
+function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: ThumbnailItem; onRemove: (id: string) => void }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: thumbnail.id });
+  
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : 1,
+    opacity: isDragging ? 0.8 : 1,
+  };
+  
+  return (
+    <div ref={setNodeRef} style={style} className="relative group">
+      <div className="relative rounded-md overflow-hidden border border-gray-200">
+        <div 
+          className="absolute left-2 top-2 bg-gray-800/70 text-white p-1 rounded cursor-move"
+          {...attributes}
+          {...listeners}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+          </svg>
+        </div>
+        <img
+          src={thumbnail.preview}
+          alt="Thumbnail preview"
+          className="w-32 h-32 object-cover"
+        />
+        <div className="absolute top-2 right-2 flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 bg-white/80 hover:bg-white rounded-full"
+            onClick={() => onRemove(thumbnail.id)}
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+        <div className="absolute bottom-2 left-2 bg-gray-800/70 text-xs text-white px-2 py-1 rounded-full">
+          #{thumbnail.displayOrder + 1}
+        </div>
+        {thumbnail.isUploading && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 type ThumbnailItem = {
   id: string;
@@ -205,14 +266,22 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
     });
   };
 
-  const handleReorderThumbnails = (dragIndex: number, dropIndex: number) => {
+  const handleReorderThumbnails = (activeId: string, overId: string) => {
     setThumbnails(prev => {
-      const newThumbnails = [...prev];
-      const [draggedItem] = newThumbnails.splice(dragIndex, 1);
-      newThumbnails.splice(dropIndex, 0, draggedItem);
+      const oldIndex = prev.findIndex(t => t.id === activeId);
+      const newIndex = prev.findIndex(t => t.id === overId);
+      
+      const newThumbnails = arrayMove(prev, oldIndex, newIndex);
       return newThumbnails.map((t, index) => ({ ...t, displayOrder: index }));
     });
   };
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   return (
     <Card className="p-4 mb-6 bg-gradient-to-r from-purple-50 to-pink-50 shadow-lg transform hover:scale-[1.01] transition-all duration-300">
@@ -279,96 +348,60 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
               <FormItem>
                 <FormLabel>Thumbnail Images (Max 5)</FormLabel>
                 <FormControl>
-                  {/* copy start */}
+                  {/* dnd-kit implementation */}
                   <div className="space-y-4">
-                    <DragDropContext onDragEnd={(result) => {
-                      if (!result.destination) return;
-                      handleReorderThumbnails(result.source.index, result.destination.index);
-                    }}>
-                      <Droppable droppableId="thumbnails" direction="vertical">
-                        {(provided) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className="flex gap-3"
-                          >
-                            {/* Thumbnails display */}
-                            {thumbnails.map((thumbnail, index) => (
-                              <Draggable key={thumbnail.id} draggableId={thumbnail.id} index={index}>
+                    <DndContext 
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) => {
+                        const { active, over } = event;
+                        if (over && active.id !== over.id) {
+                          handleReorderThumbnails(active.id.toString(), over.id.toString());
+                        }
+                      }}
+                    >
+                      <SortableContext 
+                        items={thumbnails.map(t => t.id)}
+                        strategy={horizontalListSortingStrategy}
+                      >
+                        <div className="flex gap-3">
+                          {/* Thumbnails display */}
+                          {thumbnails.map((thumbnail) => (
+                            <SortableThumbnail 
+                              key={thumbnail.id} 
+                              thumbnail={thumbnail} 
+                              onRemove={handleRemoveThumbnail} 
+                            />
+                          ))}
 
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="relative group"
-                                  >
-                                    <div className="relative rounded-md overflow-hidden border border-gray-200">
-                                      <div className="absolute left-2 top-2 bg-gray-800/70 text-white p-1 rounded cursor-move">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                          <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-                                        </svg>
-                                      </div>
-                                      <img
-                                        src={thumbnail.preview}
-                                        alt="Thumbnail preview"
-                                        className="w-32 h-32 object-cover"
-                                      />
-                                      <div className="absolute top-2 right-2 flex gap-1">
-                                        <Button
-                                          type="button"
-                                          variant="ghost"
-                                          size="icon"
-                                          className="h-6 w-6 bg-white/80 hover:bg-white rounded-full"
-                                          onClick={() => handleRemoveThumbnail(thumbnail.id)}
-                                        >
-                                          <X className="h-3 w-3" />
-                                        </Button>
 
-                                      </div>
-                                      <div className="absolute bottom-2 left-2 bg-gray-800/70 text-xs text-white px-2 py-1 rounded-full">
-                                        #{thumbnail.displayOrder + 1}
-                                      </div>
-                                      {thumbnail.isUploading && (
-                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {thumbnails.length < 5 && (
-                      <div className="w-32 h-32">
-                        <Dropzone
-                          accept={{
-                            'image/jpeg': ['.jpg', '.jpeg'],
-                            'image/png': ['.png'],
-                          }}
-                          onDropAccepted={handleAddThumbnail}
-                        >
-                          <div className="w-full h-full">
-                            <DropzoneZone className="w-full h-full border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-                              <DropzoneInput type="file" multiple />
-                              <DropzoneGroup className="gap-2">
-                                <DropzoneUploadIcon />
-                                <p className="text-xs text-center text-gray-500">
-                                  Upload more ({5 - thumbnails.length} left)
-                                </p>
-                              </DropzoneGroup>
-                            </DropzoneZone>
-                          </div>
-                        </Dropzone>
-                      </div>
-                    )}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
-                    
+                          {thumbnails.length < 5 && (
+                            <div className="w-32 h-32">
+                              <Dropzone
+                                accept={{
+                                  'image/jpeg': ['.jpg', '.jpeg'],
+                                  'image/png': ['.png'],
+                                }}
+                                onDropAccepted={handleAddThumbnail}
+                              >
+                                <div className="w-full h-full">
+                                  <DropzoneZone className="w-full h-full border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
+                                    <DropzoneInput type="file" multiple />
+                                    <DropzoneGroup className="gap-2">
+                                      <DropzoneUploadIcon />
+                                      <p className="text-xs text-center text-gray-500">
+                                        Upload more ({5 - thumbnails.length} left)
+                                      </p>
+                                    </DropzoneGroup>
+                                  </DropzoneZone>
+                                </div>
+                              </Dropzone>
+                            </div>
+                          )}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
-                  {/* copy end */}
 
                 </FormControl>
                 <FormMessage />
