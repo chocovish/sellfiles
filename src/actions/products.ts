@@ -14,6 +14,11 @@ export type Product = {
   isVisible: boolean;
   isArchived: boolean;
   displayOrder: number;
+  thumbnails: {
+    id: string;
+    fileUrl: string;
+    isFeatured: boolean;
+  }[];
 };
 
 export const getProducts = createServerFn()
@@ -35,7 +40,10 @@ export const getProducts = createServerFn()
           userId,
           isArchived: includeArchived ? undefined : false
         },
-        orderBy: { displayOrder: 'asc' }
+        orderBy: { displayOrder: 'asc' },
+        include: {
+          thumbnails: true
+        }
       });
       return products;
     } catch (error) {
@@ -73,7 +81,11 @@ export const createProductInputSchema = z.object({
   description: z.string(),
   price: z.number(),
   imageUrl: z.string(),
-  fileUrl: z.string()
+  fileUrl: z.string(),
+  thumbnails: z.array(z.object({
+    fileUrl: z.string(),
+    isFeatured: z.boolean().optional()
+  })).optional()
 });
 export const createProduct = createServerFn()
   .validator(
@@ -91,12 +103,23 @@ export const createProduct = createServerFn()
       });
       const displayOrder = lastProduct ? lastProduct.displayOrder + 1 : 0;
 
+      const { thumbnails, ...productData } = data;
+
       const product = await prisma.product.create({
         data: {
-          ...data,
+          ...productData,
           isVisible: true,
           displayOrder,
-          userId: user.id
+          userId: user.id,
+          thumbnails: thumbnails ? {
+            create: thumbnails.map(thumb => ({
+              fileUrl: thumb.fileUrl,
+              isFeatured: thumb.isFeatured ?? false
+            }))
+          } : undefined
+        },
+        include: {
+          thumbnails: true
         }
       });
       return product;
@@ -105,13 +128,19 @@ export const createProduct = createServerFn()
       throw new Error('Failed to create product');
     }
   });
-export const updateProductInputSchema = createProductInputSchema.partial().extend({ id: z.string() });
+export const updateProductInputSchema = createProductInputSchema.partial().extend({ 
+  id: z.string(),
+  thumbnails: z.array(z.object({
+    id: z.string().optional(),
+    fileUrl: z.string(),
+    isFeatured: z.boolean().optional()
+  })).optional()
+});
 export const updateProduct = createServerFn()
   .validator(
     zv(updateProductInputSchema)
   )
-  .handler(async ({ data: { id, ...data } }) => {
-    // TODO: Check if user is owner of product
+  .handler(async ({ data: { id, thumbnails, ...data } }) => {
     const user = await requireAuth();
     if (
       await prisma.product.count({
@@ -121,7 +150,19 @@ export const updateProduct = createServerFn()
     try {
       const product = await prisma.product.update({
         where: { id },
-        data
+        data: {
+          ...data,
+          thumbnails: thumbnails ? {
+            deleteMany: {},
+            create: thumbnails.map(thumb => ({
+              fileUrl: thumb.fileUrl,
+              isFeatured: thumb.isFeatured ?? false
+            }))
+          } : undefined
+        },
+        include: {
+          thumbnails: true
+        }
       });
       return product;
     } catch (error) {
@@ -212,7 +253,10 @@ export const getProductById = createServerFn()
   .handler(async ({ data: { id } }) => {
     try {
       const product = await prisma.product.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+          thumbnails: true
+        }
       });
       return product;
     } catch (error) {

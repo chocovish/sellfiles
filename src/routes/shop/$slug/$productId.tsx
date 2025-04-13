@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { ImageCarousel } from '@/components/ui/image-carousel';
 
 export const Route = createFileRoute('/shop/$slug/$productId')({
   component: ProductDetailPage,
@@ -30,6 +31,14 @@ type Product = {
   imageUrl: string;
   fileUrl: string;
   isVisible: boolean;
+  thumbnails?: {
+    id: string;
+    fileUrl: string;
+    productId: string;
+    isFeatured: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
 };
 
 function ProductDetailPage() {
@@ -149,11 +158,21 @@ function ProductDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Product Image Section */}
             <div className="space-y-4">
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100">
-                <img
-                  src={product.imageUrl}
-                  alt={product.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100">
+                <ImageCarousel 
+                  images={product.thumbnails?.map(thumbnail => ({
+                    id: thumbnail.id,
+                    fileUrl: thumbnail.fileUrl,
+                    preview: thumbnail.fileUrl,
+                    isFeatured: thumbnail.isFeatured
+                  })) || [{
+                    id: 'main',
+                    fileUrl: product.imageUrl,
+                    preview: product.imageUrl,
+                    isFeatured: true
+                  }]}
+                  className="w-full"
+                  aspectRatio="square"
                 />
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
                   <Tag className="w-5 h-5 text-purple-600" />

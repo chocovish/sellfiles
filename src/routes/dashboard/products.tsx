@@ -11,6 +11,7 @@ import { Pencil, Eye, EyeOff, Trash2, Search, GripVertical, X, Info, Save, Rotat
 import { toast } from 'sonner';
 import { useUserProfile } from '@/hooks/use-user';
 import { z } from 'zod';
+import { ImageCarousel } from '@/components/ui/image-carousel';
 
 export const Route = createFileRoute('/dashboard/products')({
   component: ProductsPage,
@@ -26,8 +27,13 @@ type Product = {
   isVisible: boolean;
   isArchived: boolean;
   displayOrder: number;
-  thumbnail?: File[];
-  productFile?: File[],
+  thumbnails?: {
+    id: string;
+    fileUrl: string;
+    preview: string;
+    isFeatured: boolean;
+  }[];
+  productFile?: File[];
 };
 
 function ProductsPage() {
@@ -448,17 +454,35 @@ function ProductDetailDialog({
       });
   };
 
+  // Convert product thumbnails to the format expected by ImageCarousel
+  const carouselImages = product.thumbnails?.map(thumbnail => ({
+    id: thumbnail.id,
+    fileUrl: thumbnail.fileUrl,
+    preview: thumbnail.fileUrl,
+    isFeatured: thumbnail.isFeatured
+  })) || [];
+
+  // If no thumbnails, use the main imageUrl as a fallback
+  if (carouselImages.length === 0 && product.imageUrl) {
+    carouselImages.push({
+      id: 'main',
+      fileUrl: product.imageUrl,
+      preview: product.imageUrl,
+      isFeatured: true
+    });
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[98vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-6xl p-0 overflow-y-auto bg-gradient-to-r from-white to-purple-50 dark:from-gray-900 dark:to-gray-800 h-[95vh] md:h-auto md:max-h-[85vh] mx-0 w-full">
           <div className="flex flex-col md:flex-row min-h-0 h-full">
             {/* Left column - Image and actions */}
             <div className="w-full md:w-2/5 bg-gradient-to-br from-blue-50 to-purple-100 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-6">
-              <div className="rounded-lg overflow-hidden bg-white shadow-lg mb-6">
-                <img
-                  src={product.imageUrl}
-                  alt={product.title}
-                  className="w-full h-auto object-cover aspect-square"
+              <div className="mb-6">
+                <ImageCarousel 
+                  images={carouselImages}
+                  className="w-full"
+                  aspectRatio="square"
                 />
               </div>
               

@@ -21,8 +21,8 @@ export async function uploadFile(file: File, folder: 'thumbnails' | 'products'):
     // If it's a thumbnail, compress the image
     if (folder === 'thumbnails') {
       const options = {
-        maxSizeMB: 1, // Max file size in MB
-        maxWidthOrHeight: 800, // Max width/height of the image
+        maxSizeMB: .5, // Max file size in MB
+        maxWidthOrHeight: 600, // Max width/height of the image
         useWebWorker: true, // Use Web Worker for better performance
         fileType: file.type, // Preserve the original file type
       };
