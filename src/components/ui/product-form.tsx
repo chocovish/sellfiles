@@ -51,16 +51,10 @@ function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: ThumbnailItem; 
   
   return (
     <div ref={setNodeRef} style={style} className="relative group">
-      <div className="relative rounded-md overflow-hidden border border-gray-200">
-        <div 
-          className="absolute left-2 top-2 bg-gray-800/70 text-white p-1 rounded cursor-move"
+      <div className="relative rounded-md overflow-hidden border border-gray-200 cursor-move"
           {...attributes}
-          {...listeners}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-          </svg>
-        </div>
+          {...listeners}>
+        
         <img
           src={thumbnail.preview}
           alt="Thumbnail preview"
