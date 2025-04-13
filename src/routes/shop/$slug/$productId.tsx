@@ -23,23 +23,7 @@ import { DownloadDialog } from '@/components/ui/download-dialog';
 import { getUserBySlug } from '@/actions/profile';
 import ShopHeader from '@/components/shop/ShopHeader';
 
-type Product = {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  fileUrl: string;
-  isVisible: boolean;
-  thumbnails?: {
-    id: string;
-    fileUrl: string;
-    productId: string;
-    isFeatured: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-};
+type Product = Awaited<ReturnType<typeof getProductById>>;
 
 function ProductDetailPage() {
   const { slug, productId } = Route.useParams();
@@ -164,13 +148,7 @@ function ProductDetailPage() {
                     id: thumbnail.id,
                     fileUrl: thumbnail.fileUrl,
                     preview: thumbnail.fileUrl,
-                    isFeatured: thumbnail.isFeatured
-                  })) || [{
-                    id: 'main',
-                    fileUrl: product.imageUrl,
-                    preview: product.imageUrl,
-                    isFeatured: true
-                  }]}
+                  }))}
                   className="w-full"
                   aspectRatio="square"
                 />

@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -27,16 +25,15 @@ import {
 } from '@/components/ui/dropzone';
 import { toast } from 'sonner';
 import { RichTextEditor } from '@/components/rich-text/rich-text-editor';
-import {type createProductInputSchema, type updateProductInputSchema} from "@/actions/products"
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { type createProductInputSchema, type updateProductInputSchema } from "@/actions/products"
 import { Star, X } from 'lucide-react';
-import React from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 type ThumbnailItem = {
   id: string;
   fileUrl: string;
   preview: string;
-  isFeatured: boolean;
+  displayOrder: number;
   isUploading?: boolean;
 };
 
@@ -55,7 +52,7 @@ type Product = {
 
 type ProductFormProps = {
   initialData?: Partial<Product>;
-  onSubmit: (data: z.infer<typeof createProductInputSchema | typeof updateProductInputSchema> ) => Promise<void>;
+  onSubmit: (data: z.infer<typeof createProductInputSchema | typeof updateProductInputSchema>) => Promise<void>;
   onClose: () => void;
   mode: 'create' | 'edit';
 };
@@ -68,10 +65,10 @@ const productFormSchemaCreate = z.object({
     id: z.string(),
     fileUrl: z.string(),
     preview: z.string(),
-    isFeatured: z.boolean()
+    displayOrder: z.number()
   })).min(1, 'At least one thumbnail is required').max(5, 'Maximum 5 thumbnails allowed'),
   productFile: z.custom<FileList>().refine((files) => files?.length > 0, 'Product file is required')
-  .refine((files) => files?.[0]?.size <= 10 * 1024 * 1024, 'File size must be less than 10MB'),
+    .refine((files) => files?.[0]?.size <= 10 * 1024 * 1024, 'File size must be less than 10MB'),
 });
 
 const productFormSchemaUpdate = productFormSchemaCreate.partial();
@@ -83,7 +80,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
         id: t.id,
         fileUrl: t.fileUrl || '',
         preview: t.fileUrl || '',
-        isFeatured: t.isFeatured
+        displayOrder: t.displayOrder || 0
       }));
     }
     return [];
@@ -110,20 +107,20 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
       let fileUrl = initialData?.fileUrl || '';
 
       // Get the featured thumbnail URL
-      const featuredThumbnail = thumbnails.find(t => t.isFeatured);
-      const imageUrl = featuredThumbnail?.fileUrl || initialData?.imageUrl || '';
+      const firstThumbnail = thumbnails[0];
+      const imageUrl = firstThumbnail?.fileUrl || initialData?.imageUrl || '';
 
       if (productFile) {
         const result = await uploadFile(productFile, 'products');
         fileUrl = result.fileUrl;
       }
-      
+
       const processedThumbnails = thumbnails.map(t => ({
         id: t.id,
         fileUrl: t.fileUrl,
-        isFeatured: t.isFeatured
+        displayOrder: t.displayOrder
       }));
-      
+
       if (mode === 'create') {
         const createFormData = formData as z.infer<typeof productFormSchemaCreate>;
         const createData = {
@@ -169,7 +166,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
       id: file.name,
       fileUrl: '',
       preview: URL.createObjectURL(file),
-      isFeatured: thumbnails.length === 0, // First thumbnail is featured by default
+      displayOrder: thumbnails.length, // Add to end of list
       isUploading: true
     }));
 
@@ -182,7 +179,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
 
       try {
         const result = await uploadFile(file, 'thumbnails');
-        setThumbnails(prev => 
+        setThumbnails(prev =>
           prev.map(t => t.id === thumbnail.id ? {
             ...t,
             fileUrl: result.fileUrl,
@@ -200,18 +197,21 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
   const handleRemoveThumbnail = (id: string) => {
     setThumbnails(prev => {
       const newThumbnails = prev.filter(t => t.id !== id);
-      // If we removed the featured thumbnail, make the first one featured
-      if (prev.find(t => t.id === id)?.isFeatured && newThumbnails.length > 0) {
-        newThumbnails[0].isFeatured = true;
-      }
+      // Reorder thumbnails after removal
+      newThumbnails.forEach((t, index) => {
+        t.displayOrder = index;
+      });
       return newThumbnails;
     });
   };
 
-  const handleSetFeaturedThumbnail = (id: string) => {
-    setThumbnails(prev => 
-      prev.map(t => ({...t, isFeatured: t.id === id}))
-    );
+  const handleReorderThumbnails = (dragIndex: number, dropIndex: number) => {
+    setThumbnails(prev => {
+      const newThumbnails = [...prev];
+      const [draggedItem] = newThumbnails.splice(dragIndex, 1);
+      newThumbnails.splice(dropIndex, 0, draggedItem);
+      return newThumbnails.map((t, index) => ({ ...t, displayOrder: index }));
+    });
   };
 
   return (
@@ -256,15 +256,15 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
-                <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                  <Input
-                    className="pl-8"
-                    type="number"
-                    step="0.01"
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                    <Input
+                      className="pl-8"
+                      type="number"
+                      step="0.01"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -279,77 +279,97 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
               <FormItem>
                 <FormLabel>Thumbnail Images (Max 5)</FormLabel>
                 <FormControl>
+                  {/* copy start */}
                   <div className="space-y-4">
-                    <div className="flex flex-wrap gap-4 items-start">
-                      {/* Thumbnails display */}
-                      {thumbnails.map((thumbnail) => (
-                        <div key={thumbnail.id} className="relative group">
-                          <div className="relative rounded-md overflow-hidden border border-gray-200">
-                            <img
-                              src={thumbnail.preview}
-                              alt="Thumbnail preview"
-                              className="w-32 h-32 object-cover"
-                            />
-                            <div className="absolute top-2 right-2 flex gap-1">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6 bg-white/80 hover:bg-white rounded-full"
-                                onClick={() => handleRemoveThumbnail(thumbnail.id)}
-                              >
-                                <X className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className={`h-6 w-6 rounded-full ${thumbnail.isFeatured ? 'bg-yellow-400 hover:bg-yellow-500' : 'bg-white/80 hover:bg-white'}`}
-                                onClick={() => handleSetFeaturedThumbnail(thumbnail.id)}
-                              >
-                                <Star className={`h-3 w-3 ${thumbnail.isFeatured ? 'fill-current' : ''}`} />
-                              </Button>
-                            </div>
-                            {thumbnail.isFeatured && (
-                              <div className="absolute bottom-2 left-2 bg-yellow-400 text-xs text-white px-2 py-1 rounded-full">
-                                Featured
-                              </div>
-                            )}
-                            {thumbnail.isUploading && (
-                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Upload more thumbnails button */}
-                      {thumbnails.length < 5 && (
-                        <div className="w-32 h-32">
-                          <Dropzone
-                            accept={{
-                              'image/jpeg': ['.jpg', '.jpeg'],
-                              'image/png': ['.png'],
-                            }}
-                            onDropAccepted={handleAddThumbnail}
+                    <DragDropContext onDragEnd={(result) => {
+                      if (!result.destination) return;
+                      handleReorderThumbnails(result.source.index, result.destination.index);
+                    }}>
+                      <Droppable droppableId="thumbnails" direction="vertical">
+                        {(provided) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className="flex gap-3"
                           >
-                            <div className="w-full h-full">
-                              <DropzoneZone className="w-full h-full border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-                                <DropzoneInput type="file" multiple />
-                                <DropzoneGroup className="gap-2">
-                                  <DropzoneUploadIcon />
-                                  <p className="text-xs text-center text-gray-500">
-                                    Upload more ({5 - thumbnails.length} left)
-                                  </p>
-                                </DropzoneGroup>
-                              </DropzoneZone>
-                            </div>
-                          </Dropzone>
-                        </div>
-                      )}
-                    </div>
+                            {/* Thumbnails display */}
+                            {thumbnails.map((thumbnail, index) => (
+                              <Draggable key={thumbnail.id} draggableId={thumbnail.id} index={index}>
+
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="relative group"
+                                  >
+                                    <div className="relative rounded-md overflow-hidden border border-gray-200">
+                                      <div className="absolute left-2 top-2 bg-gray-800/70 text-white p-1 rounded cursor-move">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                                        </svg>
+                                      </div>
+                                      <img
+                                        src={thumbnail.preview}
+                                        alt="Thumbnail preview"
+                                        className="w-32 h-32 object-cover"
+                                      />
+                                      <div className="absolute top-2 right-2 flex gap-1">
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-6 w-6 bg-white/80 hover:bg-white rounded-full"
+                                          onClick={() => handleRemoveThumbnail(thumbnail.id)}
+                                        >
+                                          <X className="h-3 w-3" />
+                                        </Button>
+
+                                      </div>
+                                      <div className="absolute bottom-2 left-2 bg-gray-800/70 text-xs text-white px-2 py-1 rounded-full">
+                                        #{thumbnail.displayOrder + 1}
+                                      </div>
+                                      {thumbnail.isUploading && (
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {thumbnails.length < 5 && (
+                      <div className="w-32 h-32">
+                        <Dropzone
+                          accept={{
+                            'image/jpeg': ['.jpg', '.jpeg'],
+                            'image/png': ['.png'],
+                          }}
+                          onDropAccepted={handleAddThumbnail}
+                        >
+                          <div className="w-full h-full">
+                            <DropzoneZone className="w-full h-full border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
+                              <DropzoneInput type="file" multiple />
+                              <DropzoneGroup className="gap-2">
+                                <DropzoneUploadIcon />
+                                <p className="text-xs text-center text-gray-500">
+                                  Upload more ({5 - thumbnails.length} left)
+                                </p>
+                              </DropzoneGroup>
+                            </DropzoneZone>
+                          </div>
+                        </Dropzone>
+                      </div>
+                    )}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                    
                   </div>
+                  {/* copy end */}
+
                 </FormControl>
                 <FormMessage />
               </FormItem>

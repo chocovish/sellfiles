@@ -8,7 +8,6 @@ type ThumbnailItem = {
   id: string;
   fileUrl: string;
   preview: string;
-  isFeatured: boolean;
 };
 
 interface ImageCarouselProps {
@@ -98,11 +97,6 @@ export function ImageCarousel({
                   alt={`Product image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                {image.isFeatured && (
-                  <div className="absolute top-2 left-2 bg-yellow-400 text-xs text-white px-2 py-1 rounded-full">
-                    Featured
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -163,9 +157,6 @@ export function ImageCarousel({
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                {image.isFeatured && (
-                  <div className="absolute top-1 left-1 bg-yellow-400 w-2 h-2 rounded-full" />
-                )}
               </button>
             ))}
           </div>

@@ -114,7 +114,7 @@ export const createProduct = createServerFn()
           thumbnails: thumbnails ? {
             create: thumbnails.map(thumb => ({
               fileUrl: thumb.fileUrl,
-              isFeatured: thumb.isFeatured ?? false
+              displayOrder: thumb.displayOrder ?? index
             }))
           } : undefined
         },
@@ -156,7 +156,7 @@ export const updateProduct = createServerFn()
             deleteMany: {},
             create: thumbnails.map(thumb => ({
               fileUrl: thumb.fileUrl,
-              isFeatured: thumb.isFeatured ?? false
+              displayOrder: thumb.displayOrder ?? index
             }))
           } : undefined
         },
