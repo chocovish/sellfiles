@@ -83,8 +83,9 @@ export const createProductInputSchema = z.object({
   imageUrl: z.string(),
   fileUrl: z.string(),
   thumbnails: z.array(z.object({
+    id: z.string(),
     fileUrl: z.string(),
-    isFeatured: z.boolean().optional()
+    displayOrder: z.number()
   })).optional()
 });
 export const createProduct = createServerFn()
@@ -113,8 +114,9 @@ export const createProduct = createServerFn()
           userId: user.id,
           thumbnails: thumbnails ? {
             create: thumbnails.map(thumb => ({
+              id: thumb.id,
               fileUrl: thumb.fileUrl,
-              displayOrder: thumb.displayOrder ?? index
+              displayOrder: thumb.displayOrder
             }))
           } : undefined
         },
@@ -130,11 +132,6 @@ export const createProduct = createServerFn()
   });
 export const updateProductInputSchema = createProductInputSchema.partial().extend({ 
   id: z.string(),
-  thumbnails: z.array(z.object({
-    id: z.string().optional(),
-    fileUrl: z.string(),
-    isFeatured: z.boolean().optional()
-  })).optional()
 });
 export const updateProduct = createServerFn()
   .validator(
@@ -155,8 +152,9 @@ export const updateProduct = createServerFn()
           thumbnails: thumbnails ? {
             deleteMany: {},
             create: thumbnails.map(thumb => ({
+              id: thumb.id,
               fileUrl: thumb.fileUrl,
-              displayOrder: thumb.displayOrder ?? index
+              displayOrder: thumb.displayOrder
             }))
           } : undefined
         },

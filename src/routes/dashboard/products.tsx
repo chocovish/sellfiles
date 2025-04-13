@@ -10,31 +10,14 @@ import { getProducts, createProduct, type createProductInputSchema, updateProduc
 import { Pencil, Eye, EyeOff, Trash2, Search, GripVertical, X, Info, Save, RotateCcw, Download, Share2, Archive } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUserProfile } from '@/hooks/use-user';
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { ImageCarousel } from '@/components/ui/image-carousel';
 
 export const Route = createFileRoute('/dashboard/products')({
   component: ProductsPage,
 })
 
-type Product = {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  fileUrl: string;
-  isVisible: boolean;
-  isArchived: boolean;
-  displayOrder: number;
-  thumbnails?: {
-    id: string;
-    fileUrl: string;
-    preview: string;
-    isFeatured: boolean;
-  }[];
-  productFile?: File[];
-};
+type Product =  Awaited<ReturnType<typeof getProducts>>[number];
 
 function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -459,18 +442,8 @@ function ProductDetailDialog({
     id: thumbnail.id,
     fileUrl: thumbnail.fileUrl,
     preview: thumbnail.fileUrl,
-    isFeatured: thumbnail.isFeatured
+    displayOrder: thumbnail.displayOrder,
   })) || [];
-
-  // If no thumbnails, use the main imageUrl as a fallback
-  if (carouselImages.length === 0 && product.imageUrl) {
-    carouselImages.push({
-      id: 'main',
-      fileUrl: product.imageUrl,
-      preview: product.imageUrl,
-      isFeatured: true
-    });
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

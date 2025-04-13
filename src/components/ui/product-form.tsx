@@ -25,14 +25,14 @@ import {
 } from '@/components/ui/dropzone';
 import { toast } from 'sonner';
 import { RichTextEditor } from '@/components/rich-text/rich-text-editor';
-import { type createProductInputSchema, type updateProductInputSchema } from "@/actions/products"
-import { Star, X } from 'lucide-react';
+import { getProductById, getProducts, type createProductInputSchema, type updateProductInputSchema } from "@/actions/products"
+import { Star, X, GripVertical } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 // SortableThumbnail component for dnd-kit
-function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: ThumbnailItem; onRemove: (id: string) => void }) {
+function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: Product["thumbnails"][number]; onRemove: (id: string) => void }) {
   const {
     attributes,
     listeners,
@@ -54,6 +54,11 @@ function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: ThumbnailItem; 
       <div className="relative rounded-md overflow-hidden border border-gray-200 cursor-move"
           {...attributes}
           {...listeners}>
+        
+        {/* Drag handle indicator */}
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-md opacity-70 group-hover:opacity-100 transition-opacity z-10">
+          <GripVertical className="h-4 w-4 text-gray-600" />
+        </div>
         
         <img
           src={thumbnail.preview}
@@ -84,26 +89,25 @@ function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: ThumbnailItem; 
   );
 }
 
-type ThumbnailItem = {
-  id: string;
-  fileUrl: string;
-  preview: string;
-  displayOrder: number;
-  isUploading?: boolean;
+// type ThumbnailItem = {
+//   id: string;
+//   fileUrl: string;
+//   preview?: string;
+//   displayOrder: number;
+//   isUploading?: boolean;
+// };
+
+type _Product = Awaited<ReturnType<typeof getProducts>>[number];
+type Product = Omit<_Product, "createdAt" | "updatedAt" | "thumbnails"> & {
+  thumbnails: {
+    id: string;
+    fileUrl: string;
+    preview?: string;
+    displayOrder: number;
+    isUploading?: boolean;
+  }[];
 };
 
-type Product = {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  fileUrl: string;
-  isVisible: boolean;
-  displayOrder: number;
-  thumbnails?: ThumbnailItem[];
-  productFile?: File[];
-};
 
 type ProductFormProps = {
   initialData?: Partial<Product>;
@@ -129,7 +133,7 @@ const productFormSchemaCreate = z.object({
 const productFormSchemaUpdate = productFormSchemaCreate.partial();
 
 export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFormProps) {
-  const [thumbnails, setThumbnails] = useState<ThumbnailItem[]>(() => {
+  const [thumbnails, setThumbnails] = useState(() => {
     if (initialData?.thumbnails && initialData.thumbnails.length > 0) {
       return initialData.thumbnails.map(t => ({
         id: t.id,
@@ -148,6 +152,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
       title: initialData?.title || '',
       description: initialData?.description || '',
       price: initialData?.price || 0,
+      thumbnails: initialData?.thumbnails || [],
     },
   });
 
@@ -217,7 +222,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
     // Create a map of files by name for easy lookup
     const filesByName = new Map(files.map(file => [file.name, file]));
 
-    const newThumbnails: ThumbnailItem[] = files.map(file => ({
+    const newThumbnails = files.map(file => ({
       id: file.name,
       fileUrl: '',
       preview: URL.createObjectURL(file),
@@ -358,7 +363,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
                         items={thumbnails.map(t => t.id)}
                         strategy={horizontalListSortingStrategy}
                       >
-                        <div className="flex gap-3">
+                        <div className="flex gap-1 md:gap-4">
                           {/* Thumbnails display */}
                           {thumbnails.map((thumbnail) => (
                             <SortableThumbnail 
@@ -369,7 +374,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
                           ))}
 
 
-                          {thumbnails.length < 5 && (
+                          {(field.value?.length || 0) < 5 && (
                             <div className="w-32 h-32">
                               <Dropzone
                                 accept={{
