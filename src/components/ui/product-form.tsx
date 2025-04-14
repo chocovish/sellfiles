@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 import { RichTextEditor } from '@/components/rich-text/rich-text-editor';
 import { getProductById, getProducts, type createProductInputSchema, type updateProductInputSchema } from "@/actions/products"
 import { Star, X, GripVertical } from 'lucide-react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, sortableKeyboardCoordinates, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -47,10 +47,11 @@ function SortableThumbnail({ thumbnail, onRemove }: { thumbnail: Product["thumbn
     transition,
     zIndex: isDragging ? 10 : 1,
     opacity: isDragging ? 0.8 : 1,
+    touchAction: 'none' 
   };
   
   return (
-    <div ref={setNodeRef} style={style} className="relative group">
+    <div ref={setNodeRef} style={style} className="relative group" >
       <div className="relative rounded-md overflow-hidden border border-gray-200 cursor-move"
           {...attributes}
           {...listeners}>
@@ -277,6 +278,7 @@ export function ProductForm({ initialData, onSubmit, onClose, mode }: ProductFor
   
   const sensors = useSensors(
     useSensor(PointerSensor),
+    useSensor(TouchSensor), // Add TouchSensor for touch device support
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
