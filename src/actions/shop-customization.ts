@@ -74,11 +74,6 @@ export const createShopCustomizationInputSchema = z.object({
   bannerLink: z.string().optional(),
   bannerText: z.string().optional(),
   featuredProducts: z.array(z.string()).optional(),
-  productLayout: z.string().optional(),
-  accentColor: z.string().optional(),
-  showPrice: z.boolean().optional(),
-  showDescription: z.boolean().optional(),
-  showThumbnails: z.boolean().optional(),
   customCss: z.string().optional(),
   customJs: z.string().optional(),
 });

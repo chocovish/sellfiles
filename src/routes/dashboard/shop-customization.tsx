@@ -1,14 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState, createContext, useContext } from 'react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
-import { Toggle } from '@/components/ui/toggle';
-import { Dropzone } from '@/components/dropzone';
 import { 
   getShopCustomization, 
   updateShopCustomization, 
@@ -16,10 +9,7 @@ import {
 } from '@/actions/shop-customization';
 import { getProducts as getProductsAction, type Product } from '@/actions/products';
 import { toast } from 'sonner';
-import { ImageCarousel } from '@/components/ui/image-carousel';
 import { 
-  Palette, 
-  LayoutGrid, 
   Image as ImageIcon, 
   Link as LinkIcon, 
   Type, 
@@ -28,17 +18,11 @@ import {
   Save, 
   Eye, 
   EyeOff, 
-  DollarSign, 
-  FileText, 
-  Image as ImageIcon2,
   Loader2
 } from 'lucide-react';
-import { GeneralSettings } from '@/components/shop-customization/general-settings';
 import { BannerSettings } from '@/components/shop-customization/banner-settings';
 import { FeaturedProducts } from '@/components/shop-customization/featured-products';
-import { ProductDisplaySettings } from '@/components/shop-customization/product-display-settings';
 import { AdvancedSettings } from '@/components/shop-customization/advanced-settings';
-import { ShopPreview } from '@/components/shop-customization/shop-preview';
 
 // Create a context for shop customization state
 export const ShopCustomizationContext = createContext<{
@@ -46,17 +30,11 @@ export const ShopCustomizationContext = createContext<{
   products: Product[];
   isLoading: boolean;
   isSaving: boolean;
-  previewMode: boolean;
   activeTab: string;
   bannerImage: string | undefined;
   bannerLink: string | undefined;
   bannerText: string | undefined;
   featuredProducts: string[];
-  productLayout: string;
-  accentColor: string;
-  showPrice: boolean;
-  showDescription: boolean;
-  showThumbnails: boolean;
   customCss: string | undefined;
   customJs: string | undefined;
   setActiveTab: (tab: string) => void;
@@ -65,11 +43,6 @@ export const ShopCustomizationContext = createContext<{
   setBannerLink: (link: string | undefined) => void;
   setBannerText: (text: string | undefined) => void;
   setFeaturedProducts: (products: string[]) => void;
-  setProductLayout: (layout: string) => void;
-  setAccentColor: (color: string) => void;
-  setShowPrice: (show: boolean) => void;
-  setShowDescription: (show: boolean) => void;
-  setShowThumbnails: (show: boolean) => void;
   setCustomCss: (css: string | undefined) => void;
   setCustomJs: (js: string | undefined) => void;
   handleSave: () => Promise<void>;
@@ -80,17 +53,11 @@ export const ShopCustomizationContext = createContext<{
   products: [],
   isLoading: true,
   isSaving: false,
-  previewMode: false,
-  activeTab: 'general',
+  activeTab: 'banner',
   bannerImage: undefined,
   bannerLink: undefined,
   bannerText: undefined,
   featuredProducts: [],
-  productLayout: 'grid',
-  accentColor: '#6366f1',
-  showPrice: true,
-  showDescription: true,
-  showThumbnails: true,
   customCss: undefined,
   customJs: undefined,
   setActiveTab: () => {},
@@ -99,11 +66,6 @@ export const ShopCustomizationContext = createContext<{
   setBannerLink: () => {},
   setBannerText: () => {},
   setFeaturedProducts: () => {},
-  setProductLayout: () => {},
-  setAccentColor: () => {},
-  setShowPrice: () => {},
-  setShowDescription: () => {},
-  setShowThumbnails: () => {},
   setCustomCss: () => {},
   setCustomJs: () => {},
   handleSave: async () => {},
@@ -123,7 +85,7 @@ function ShopCustomizationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState('banner');
 
   // Form state
   const [bannerImage, setBannerImage] = useState<string | undefined>(undefined);
@@ -184,11 +146,6 @@ function ShopCustomizationPage() {
           bannerLink,
           bannerText,
           featuredProducts,
-          productLayout,
-          accentColor,
-          showPrice,
-          showDescription,
-          showThumbnails,
           customCss,
           customJs,
         }
@@ -275,14 +232,14 @@ function ShopCustomizationPage() {
             Shop Customization
           </h1>
           <div className="flex gap-2">
-            <Button 
+            {/* <Button 
               variant="outline" 
               onClick={() => setPreviewMode(!previewMode)}
               className="border-purple-200 hover:bg-purple-50"
             >
               {previewMode ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
               {previewMode ? 'Hide Preview' : 'Preview Shop'}
-            </Button>
+            </Button> */}
             <Button 
               variant="default" 
               onClick={handleSave}
@@ -296,11 +253,7 @@ function ShopCustomizationPage() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 p-1 rounded-lg">
-            <TabsTrigger value="general" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-600">
-              <Palette className="h-4 w-4" />
-              <span className="hidden md:inline">General</span>
-            </TabsTrigger>
+          <TabsList className="grid grid-cols-3 md:grid-cols-3 mb-6 bg-gradient-to-r from-blue-50 to-purple-50 p-1 rounded-lg">
             <TabsTrigger value="banner" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-600">
               <ImageIcon className="h-4 w-4" />
               <span className="hidden md:inline">Banner</span>
@@ -309,19 +262,11 @@ function ShopCustomizationPage() {
               <Star className="h-4 w-4" />
               <span className="hidden md:inline">Featured</span>
             </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-600">
-              <LayoutGrid className="h-4 w-4" />
-              <span className="hidden md:inline">Products</span>
-            </TabsTrigger>
             <TabsTrigger value="advanced" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-purple-600">
               <Code className="h-4 w-4" />
               <span className="hidden md:inline">Advanced</span>
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="general">
-            <GeneralSettings />
-          </TabsContent>
 
           <TabsContent value="banner">
             <BannerSettings />
@@ -331,17 +276,11 @@ function ShopCustomizationPage() {
             <FeaturedProducts />
           </TabsContent>
 
-          <TabsContent value="products">
-            <ProductDisplaySettings />
-          </TabsContent>
-
           <TabsContent value="advanced">
             <AdvancedSettings />
           </TabsContent>
         </Tabs>
-
-        {previewMode && <ShopPreview />}
       </div>
     </ShopCustomizationContext.Provider>
   );
-} 
+}

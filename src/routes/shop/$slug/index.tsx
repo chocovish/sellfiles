@@ -26,7 +26,7 @@ import { ImageCarousel } from '@/components/ui/image-carousel';
 import { useEffect, useState } from 'react';
 import { FeaturedProductsCarousel } from '@/components/shop/FeaturedProductsCarousel';
 
-function UserShopPage() {
+export function UserShopPage() {
   let { products, shopCustomization } = Route.useLoaderData();
   let { slug } = Route.useParams();
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
